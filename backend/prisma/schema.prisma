@@ -1,0 +1,231 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                     String       @id @default(uuid())
+  email                  String?      @unique
+  phone                  String?      @unique
+  fullname               String
+  password               String       @unique
+  emailVerified          Boolean      @default(false)
+  emailOtpHash           String?
+  emailOtpExpiresAt      DateTime?
+  otp                    String?
+  otpExpiresAt           DateTime?
+  resetPasswordToken     String?
+  resetPasswordExpiresAt DateTime?
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+  deleted                Boolean      @default(false)
+  investments            Investment[]
+  orders                 Order[]
+  userRoles              UserRole[]
+}
+
+model Role {
+  id              String           @id @default(uuid())
+  name            RoleName         @unique
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  rolePermissions RolePermission[]
+  userRoles       UserRole[]
+}
+
+model UserRole {
+  id        String   @id @default(uuid())
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role      Role     @relation(fields: [roleId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+}
+
+model Permission {
+  id              String           @id @default(uuid())
+  name            String           @unique
+  description     String?
+  rolePermissions RolePermission[]
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  permission   Permission @relation(fields: [permissionId], references: [id])
+  role         Role       @relation(fields: [roleId], references: [id])
+
+  @@id([roleId, permissionId])
+}
+
+model Tricycle {
+  id            String      @id @default(uuid())
+  sku           String?     @unique
+  model         String
+  chasisNumber  String
+  engineNumber  String
+  purchasePrice Float?
+  salePrice     Float?
+  color         String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  investment    Investment?
+  deleted                Boolean      @default(false)
+  order         Order?
+}
+
+model Order {
+  id                 String              @id @default(uuid())
+  orderType          OrderType           @unique
+  userId             String
+  tricycleId         String              @unique
+  totalPrice         Float
+  downPayment        Float?
+  durationWeeks      Int?
+  startDate          DateTime?
+  endDate            DateTime?
+  status             OrderStatus         @default(PENDING)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  tricycle           Tricycle            @relation(fields: [tricycleId], references: [id])
+  user               User                @relation(fields: [userId], references: [id])
+  payments           Payment[]
+  repaymentSchedules RepaymentSchedule[]
+  deleted                Boolean      @default(false)
+
+}
+
+model RepaymentSchedule {
+  id                String          @id @default(uuid())
+  orderId           String
+  installmentNumber Int
+  startDate           DateTime
+  dueDate           DateTime
+  amountDue         Float
+  amountPaid        Float           @default(0)
+  status            RepaymentStatus @default(PENDING)
+  createdAt         DateTime        @default(now())
+  payments          Payment[]
+  order             Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@unique([orderId, installmentNumber])
+}
+
+model Payment {
+  id          String             @id @default(uuid())
+  orderId     String
+  scheduleId  String?
+  amount      Float
+  paymentDate DateTime
+  method      PaymentMethod
+  reference   String?
+  recordedBy  String?
+  createdAt   DateTime           @default(now())
+  order       Order              @relation(fields: [orderId], references: [id],onDelete: Cascade)
+  schedule    RepaymentSchedule? @relation(fields: [scheduleId], references: [id],onDelete: Cascade)
+}
+
+model Investment {
+  id             String           @id @default(uuid())
+  userId         String
+  tricycleId     String           @unique
+  totalPrice     Float?
+  investedAmount Float?
+  durationWeeks  Int?
+  expectedReturn Float?
+  profitShare    Float?
+  startDate      DateTime?
+  endDate        DateTime?
+  status         InvestmentStatus @default(ACTIVE)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  tricycle       Tricycle         @relation(fields: [tricycleId], references: [id])
+  user           User             @relation(fields: [userId], references: [id])
+  payouts        Payout[]
+  schedules      PayoutSchedule[]
+  deleted                Boolean      @default(false)
+
+}
+
+model PayoutSchedule {
+  id                String          @id @default(uuid())
+  investmentId      String
+  installmentNumber Int
+  startDate      DateTime?
+  dueDate           DateTime
+  amountDue         Float
+  amountPaid        Float           @default(0)
+  status            RepaymentStatus @default(PENDING)
+  createdAt         DateTime        @default(now())
+  payouts           Payout[]
+  investment        Investment      @relation(fields: [investmentId], references: [id],onDelete: Cascade)
+
+  @@unique([investmentId, installmentNumber])
+}
+
+model Payout {
+  id               String         @id @default(uuid())
+  investmentId     String
+  payoutScheduleId String
+  amount           Float
+  payoutDate       DateTime
+  method           PaymentMethod
+  reference        String?
+  status           PayoutStatus   @default(PENDING)
+  recordedBy       String?
+  createdAt        DateTime       @default(now())
+  investment       Investment     @relation(fields: [investmentId], references: [id],onDelete: Cascade)
+  payoutSchedule   PayoutSchedule @relation(fields: [payoutScheduleId], references: [id],onDelete: Cascade)
+}
+
+enum RoleName {
+  super_admin
+  admin
+  staff
+  user
+}
+
+enum OrderType {
+  DIRECT_PURCHASE
+  HIRE_PURCHASE
+}
+
+enum RepaymentStatus {
+  PENDING
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+}
+
+enum PaymentMethod {
+  CASH
+  TRANSFER
+  CARD
+}
+
+enum OrderStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  DEFAULTED
+  CANCELLED
+}
+
+enum InvestmentStatus {
+  ACTIVE
+  COMPLETED
+  DEFAULTED
+}
+
+enum PayoutStatus {
+  PENDING
+  PAID
+}
