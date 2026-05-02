@@ -12,9 +12,9 @@ import {
 import { Card, CardContent, CardHeader } from "./ui/card";
 
 const chartConfig = {
-  customer: {
-    label: "New Customer",
-  },
+  // customer: {
+  //   label: "New Customer",
+  // },
 } satisfies ChartConfig;
 
 export function CustomersChart({ data }: { data: any[] }) {
@@ -47,8 +47,8 @@ export function CustomersChart({ data }: { data: any[] }) {
                 })
               }
             />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <ChartLegend content={<ChartLegendContent />} />
+            {/* <ChartTooltip content={<ChartTooltipContent />} /> */}
+            {/* <ChartLegend content={<ChartLegendContent />} /> */}
             <Bar dataKey="customer" fill="#2563eb" radius={4} />
           </BarChart>
         </ChartContainer>

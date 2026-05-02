@@ -258,6 +258,81 @@ export class UserService {
     };
   }
 
+  async getUserOrders(userId: string) {
+    const orders = await this.prisma.order.findMany({
+      where: {
+        deleted: false,
+        userId,
+      },
+      select: {
+        id: true,
+        orderType: true,
+        status: true,
+        totalPrice: true,
+        downPayment: true,
+        tricycle: {
+          select: {
+            model: true,
+            color: true,
+            chasisNumber: true,
+            engineNumber: true,
+          },
+        },
+        user: {
+          select: {
+            fullname: true,
+          },
+        },
+      },
+    });
+
+    return orders.map(({ tricycle, user, ...order }) => ({
+      ...order,
+      model: tricycle?.model,
+      color: tricycle.color,
+      chasisNumber: tricycle.chasisNumber,
+      engineNumber: tricycle.engineNumber,
+      fullname: user.fullname,
+    }));
+  }
+
+  async getUserInvestments(userId: string) {
+    const investments = await this.prisma.investment.findMany({
+      where: {
+        deleted: false,
+        userId,
+      },
+      select: {
+        id: true,
+        status: true,
+        expectedReturn: true,
+        investedAmount: true,
+        tricycle: {
+          select: {
+            model: true,
+            color: true,
+            chasisNumber: true,
+            engineNumber: true,
+          },
+        },
+        user: {
+          select: {
+            fullname: true,
+          },
+        },
+      },
+    });
+
+    return investments.map(({ tricycle, user, ...investment }) => ({
+      ...investment,
+      model: tricycle?.model,
+      color: tricycle.color,
+      chasisNumber: tricycle.chasisNumber,
+      engineNumber: tricycle.engineNumber,
+      fullname: user.fullname,
+    }));
+  }
+
   softdelete(id: string) {
     return this.prisma.user.update({
       where: {

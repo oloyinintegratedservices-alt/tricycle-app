@@ -4,23 +4,22 @@ import { CustomersChart } from "@/components/CustomersChart";
 import { OrdersChart } from "@/components/OrdersChart";
 import RecentOrders from "@/components/RecentOrders";
 import axios from "axios";
-import { Order } from "@/types";
+import { Investment, Order } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChartAreaIcon, DollarSign, ListOrdered, Caravan } from "lucide-react";
+import RecentInvestments from "@/components/RecentInvestments";
 
 const UserDashboard = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["userstats"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3002/api/dashboard/admin", {
+      const res = await axios.get("http://localhost:3002/api/dashboard/user", {
         withCredentials: true,
       });
 
       return res.data;
     },
   });
-
-  //   console.log(data);
 
   if (isLoading) {
     return (
@@ -60,23 +59,13 @@ const UserDashboard = () => {
           </div>
         </div>
       </div>
-      {/* <div className="my-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <CustomersChart
-          data={data?.customersPerDay?.map(({ date, count }: any) => ({
-            date,
-            customer: count,
-          }))}
-        />
-        <OrdersChart
-          data={data?.ordersPerDay?.map(({ date, count }: any) => ({
-            date,
-            order: count,
-          }))}
-        />
-      </div> */}
-      {/* Recents Orders */}
+      <div className="space-y-4">
+        <RecentOrders orders={data?.recentOrders as Order[]} />
 
-      <RecentOrders orders={data?.recentOrders as Order[]} />
+        <RecentInvestments
+          investments={data?.recentInvestments as Investment[]}
+        />
+      </div>
     </div>
   );
 };

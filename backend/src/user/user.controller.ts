@@ -14,7 +14,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { Response } from 'express';
 import { JwtGuard } from '../common/guards/jwt.guard';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -24,55 +23,62 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { GetUsersDto } from './dto/get-users.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { GetUser } from '../common/decorators/get-user.decorator';
 
+@UseGuards(JwtGuard, RolesGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UseGuards(JwtGuard, RolesGuard)
-  @Roles()
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
   @Post()
   async createUser(@Body() dto: CreateUserDto) {
     return this.userService.createUser(dto);
   }
 
-  @UseGuards(JwtGuard, RolesGuard)
-  @Roles()
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
   @Patch()
   updateUser(@Body() dto: UpdateUserDto) {
     return this.userService.updateUser(dto);
   }
 
-  @UseGuards(JwtGuard, RolesGuard)
-  @Roles()
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
   @Get()
   async getUsers(@Query() query: GetUsersDto) {
     return this.userService.getUsers(query);
   }
 
-  @UseGuards(JwtGuard, RolesGuard)
-  @Roles()
+  @Roles(RoleName.user)
+  @Get('investment')
+  getUserInvestments(@GetUser('userId') userId: string) {
+    return this.userService.getUserInvestments(userId);
+  }
+
+  @Roles(RoleName.user)
+  @Get('order')
+  getUserOrders(@GetUser('userId') userId: string) {
+    return this.userService.getUserOrders(userId);
+  }
+
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
     return this.userService.softdelete(id);
   }
 
-  @UseGuards(JwtGuard, RolesGuard)
-  @Roles()
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
   @Post('staff')
   createStaff(@Body() createStaffDto: CreateStaffDto) {
     return this.userService.createStaff(createStaffDto);
   }
 
-  @UseGuards(JwtGuard, RolesGuard)
   @Roles(RoleName.super_admin)
   @Post('admin')
   async createAdmin(@Body() createAdminDto: CreateAdminDto) {
     return this.userService.createAdmin(createAdminDto);
   }
 
-  @UseGuards(JwtGuard, RolesGuard)
-  @Roles()
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
   @Get('staff')
   async getStaffs(@Query() query: GetUsersDto) {
     return this.userService.getStaffs(query);

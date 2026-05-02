@@ -96,7 +96,7 @@ const Page = () => {
   const { data } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3002/api/order", {
+      const res = await axios.get("http://localhost:3002/api/user/order", {
         withCredentials: true,
       });
 

@@ -15,9 +15,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { Order } from "@/types";
+export type Investment = {
+  id: string;
+  brand: string;
+  chasisNumber: string;
+  engineNumber: string;
+  color: string;
+  fullname: string;
+  salesPrice: number;
+};
 
-export const columns: ColumnDef<Order>[] = [
+export const columns: ColumnDef<Investment>[] = [
   {
     accessorKey: "tricycle.model",
     header: "Brand",
@@ -30,41 +38,53 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "tricycle.engineNumber",
     header: "Engine Number",
   },
-
   {
     accessorKey: "user.fullname",
     header: "Customer",
   },
   {
-    accessorKey: "orderType",
-    header: "Order Type",
-  },
-  {
-    accessorKey: "totalPrice",
-    header: "Amount",
+    accessorKey: "investedAmount",
+    header: () => <div className="text-left">Total Invested Amount</div>,
     cell: ({ row }) => {
-      return new Intl.NumberFormat("en-NG", {
+      const amount = parseFloat(row.getValue("investedAmount"));
+      const formatted = new Intl.NumberFormat("en-NG", {
         style: "currency",
         currency: "NGN",
-      }).format(row.getValue("totalPrice") as number);
+      }).format(amount);
+
+      return <div className="text-left font-medium">{formatted}</div>;
     },
   },
+  {
+    accessorKey: "expectedReturn",
+    header: () => <div className="text-left">Total Expected Return</div>,
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("expectedReturn"));
+      const formatted = new Intl.NumberFormat("en-NG", {
+        style: "currency",
+        currency: "NGN",
+      }).format(amount);
+
+      return <div className="text-left font-medium">{formatted}</div>;
+    },
+  },
+
   {
     accessorKey: "status",
     header: "Status",
   },
 ];
 
-const RecentOrders = ({ orders }: { orders: Order[] }) => {
+const RecentInvestments = ({ investments }: { investments: Investment[] }) => {
   const table = useReactTable({
-    data: orders,
+    data: investments,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
   return (
     <div className="overflow-hidden rounded-md border bg-white">
-      <h2 className="my-4 mx-2 font-bold">Recent Orders</h2>
+      <h2 className="my-4 mx-2 font-bold">Recent Investments</h2>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -111,4 +131,4 @@ const RecentOrders = ({ orders }: { orders: Order[] }) => {
   );
 };
 
-export default RecentOrders;
+export default RecentInvestments;

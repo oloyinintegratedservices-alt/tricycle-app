@@ -89,7 +89,7 @@ const Page = () => {
   const { data } = useQuery({
     queryKey: ["investments"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3002/api/investment", {
+      const res = await axios.get("http://localhost:3002/api/user/investment", {
         withCredentials: true,
       });
 

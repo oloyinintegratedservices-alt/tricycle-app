@@ -23,14 +23,20 @@ export async function proxy(request: NextRequest) {
 
   if (
     AUTH_ROUTES.includes(pathname) &&
-    (user?.roles?.includes("admin") || user?.roles?.includes("super_admin"))
+    (user?.roles?.includes("admin") ||
+      user?.roles?.includes("super_admin") ||
+      user?.roles?.includes("staff"))
   ) {
     return NextResponse.redirect(new URL("/admin/dashboard", request.url));
   }
 
   if (
     pathname.includes("/admin/dashboard") &&
-    !(user?.roles?.includes("admin") || user?.roles?.includes("super_admin"))
+    !(
+      user?.roles?.includes("admin") ||
+      user?.roles?.includes("super_admin") ||
+      user?.roles?.includes("staff")
+    )
   ) {
     return NextResponse.redirect(new URL("/", request.url));
   }
@@ -39,12 +45,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/",
-    // "/signin",
-    // "/signup",
-    // "/signin/admin",
-    "/user/dashboard/:path*",
-    "/admin/dashboard/:path*",
-  ],
+  matcher: ["/", "/user/dashboard/:path*", "/admin/dashboard/:path*"],
 };

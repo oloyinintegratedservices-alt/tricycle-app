@@ -50,6 +50,21 @@ export type Menu = {
 
 export type Order = {
   id: string;
-  orderNumber: string;
-  status: "pending" | "processing" | "success" | "failed" | any;
+  brand: string;
+  chasisNumber: string;
+  engineNumber: string;
+  color: string;
+  orderType: string;
+  user: string;
+  salesPrice: number;
+};
+
+export type Investment = {
+  id: string;
+  brand: string;
+  chasisNumber: string;
+  engineNumber: string;
+  color: string;
+  fullname: string;
+  salesPrice: number;
 };

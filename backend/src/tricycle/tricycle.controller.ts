@@ -17,31 +17,35 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { RoleName } from '../../generated/prisma/enums';
 
 @UseGuards(JwtGuard, RolesGuard)
-// @Roles(RoleName.admin)
 @Controller('tricycle')
 export class TricycleController {
   constructor(private readonly tricycleService: TricycleService) {}
 
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
   @Post()
   create(@Body() createTricycleDto: CreateTricycleDto) {
     return this.tricycleService.create(createTricycleDto);
   }
 
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
   @Get()
   findAll() {
     return this.tricycleService.findAll();
   }
 
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.tricycleService.findOne(id);
   }
 
+  @Roles(RoleName.admin, RoleName.staff)
   @Patch()
   update(@Body() updateTricycleDto: UpdateTricycleDto) {
     return this.tricycleService.update(updateTricycleDto);
   }
 
+  @Roles(RoleName.admin)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.tricycleService.softdelete(id);

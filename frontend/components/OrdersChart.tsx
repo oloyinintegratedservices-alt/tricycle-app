@@ -47,8 +47,8 @@ export function OrdersChart({ data }: { data: any[] }) {
                 })
               }
             />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <ChartLegend content={<ChartLegendContent />} />
+            {/* <ChartTooltip content={<ChartTooltipContent />} />
+            <ChartLegend content={<ChartLegendContent />} /> */}
             <Bar dataKey="order" fill="#2563eb" radius={4} />
           </BarChart>
         </ChartContainer>
