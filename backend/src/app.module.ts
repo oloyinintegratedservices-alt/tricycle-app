@@ -13,6 +13,7 @@ import { PayoutscheduleModule } from './payoutschedule/payoutschedule.module';
 import { RepaymentscheduleModule } from './repaymentschedule/repaymentschedule.module';
 import { ConfigModule } from '@nestjs/config';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     PayoutscheduleModule,
     RepaymentscheduleModule,
     DashboardModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

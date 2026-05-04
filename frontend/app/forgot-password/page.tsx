@@ -19,26 +19,23 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useState } from "react";
 
-const loginFormSchema = z.object({
+const forgotPasswordFormSchema = z.object({
   email: z.email("Email should be a valid email address"),
-  password: z.string(),
 });
 
 export default function Home() {
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
-  const form = useForm<z.infer<typeof loginFormSchema>>({
-    resolver: zodResolver(loginFormSchema),
+  const form = useForm<z.infer<typeof forgotPasswordFormSchema>>({
+    resolver: zodResolver(forgotPasswordFormSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
 
   const mutation = useMutation({
-    mutationFn: async (data: z.infer<typeof loginFormSchema>) => {
+    mutationFn: async (data: z.infer<typeof forgotPasswordFormSchema>) => {
       const res = await axios.post(
-        "http://localhost:3002/api/auth/login",
+        "http://localhost:3002/api/auth/forgot-password",
         data,
         {
           withCredentials: true,
@@ -48,14 +45,14 @@ export default function Home() {
       return res.data;
     },
     onSuccess: () => {
-      router.replace("/user/dashboard");
+      toast.success("Please check your email for reset password link");
     },
     onError: (err: any) => {
       toast.error(err?.response?.data?.message);
     },
   });
 
-  async function onSubmit(values: z.infer<typeof loginFormSchema>) {
+  async function onSubmit(values: z.infer<typeof forgotPasswordFormSchema>) {
     mutation.mutate(values);
   }
 
@@ -63,7 +60,7 @@ export default function Home() {
     <div className="relative flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans text-black">
       <div className="z-20 bg-white min-w-2xl rounded-s-md p-4">
         <div>
-          <h2>Sign In</h2>
+          <h2>Forgot Password </h2>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="space-y-4 mt-4">
               <Controller
@@ -90,43 +87,15 @@ export default function Home() {
                 )}
               />
 
-              <Controller
-                name="password"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field>
-                    <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                    <InputGroup>
-                      <InputGroupInput
-                        {...field}
-                        id={field.name}
-                        aria-invalid={fieldState.invalid}
-                        type={showPassword ? "text" : "password"}
-                        placeholder="*******"
-                      />
-                      <InputGroupAddon
-                        align="inline-end"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-                      </InputGroupAddon>
-                    </InputGroup>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-
               <div className="flex justify-end underline">
-                <Link href="/forgot-password">Forgot Password?</Link>
+                <Link href="/">Login</Link>
               </div>
               <Button
                 type="submit"
                 // disabled={mutation.isPending}
                 className="w-full cursor-pointer"
               >
-                Login
+                Submit
               </Button>
             </div>
           </form>

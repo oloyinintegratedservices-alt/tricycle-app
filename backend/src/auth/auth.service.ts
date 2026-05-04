@@ -11,6 +11,8 @@ import { jwtConstants } from './constants';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 import { generateOtp } from './helpers/generate-otp';
+import { EmailService } from '../email/email.service';
+import { url } from 'inspector';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +20,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private config: ConfigService,
+    private emailService: EmailService,
   ) {}
 
   async login(dto: LoginDto) {
@@ -143,20 +146,38 @@ export class AuthService {
       .update(rawToken)
       .digest('hex');
 
+    await this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        resetPasswordToken: hashedToken,
+        resetPasswordExpiresAt: new Date(),
+      },
+    });
+
     const resetLink = `${this.config.get(
       'FRONTEND_URL',
     )}/reset-password?token=${hashedToken}`;
+
+    console.log(resetLink);
+
+    await this.emailService.sendMail({
+      to: user.email!,
+      subject: 'Reset Password',
+      template: 'reset-password',
+      context: { url: resetLink },
+    });
+
+    return {
+      message: 'success',
+    };
   }
 
   async resetPassword(token: string, newPassword: string) {
-    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
-
     const user = await this.prisma.user.findFirst({
       where: {
-        resetPasswordToken: hashedToken,
-        resetPasswordExpiresAt: {
-          gt: new Date(),
-        },
+        resetPasswordToken: token,
       },
     });
 
