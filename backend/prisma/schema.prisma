@@ -100,6 +100,10 @@ model Order {
   payments           Payment[]
   repaymentSchedules RepaymentSchedule[]
   deleted                Boolean      @default(false)
+  fullname           String?
+  branchChairman     String?
+  address            String?
+  guarantorName          String? 
 
 }
 

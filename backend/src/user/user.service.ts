@@ -333,6 +333,26 @@ export class UserService {
     }));
   }
 
+  async getUserPayouts(userId: string) {
+    return this.prisma.payout.findMany({
+      where: {
+        investment: {
+          userId,
+        },
+      },
+      include: {
+        payoutSchedule: {
+          select: {
+            installmentNumber: true,
+          },
+        },
+      },
+      orderBy: {
+        payoutDate: 'desc',
+      },
+    });
+  }
+
   softdelete(id: string) {
     return this.prisma.user.update({
       where: {

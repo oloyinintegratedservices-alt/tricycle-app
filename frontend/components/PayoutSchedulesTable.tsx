@@ -5,6 +5,7 @@ import { DataTable } from "@/components/DataTable";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import EditPayoutSchedule from "./EditPayoutSchedule";
+import PayoutHistory from "./PayoutHistory";
 
 export type PayoutSchedule = {
   id: string;
@@ -44,7 +45,7 @@ export const columns: ColumnDef<PayoutSchedule>[] = [
     header: "Amount",
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amountDue"));
-      const formatted = new Intl.NumberFormat("en-US", {
+      const formatted = new Intl.NumberFormat("en-NG", {
         style: "currency",
         currency: "NGN",
       }).format(amount);
@@ -64,6 +65,7 @@ export const columns: ColumnDef<PayoutSchedule>[] = [
       return (
         <div className="flex gap-2">
           <EditPayoutSchedule payoutschedule={row.original} />
+          <PayoutHistory payoutschedule={row.original} />
         </div>
       );
     },

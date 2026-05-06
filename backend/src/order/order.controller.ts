@@ -15,6 +15,7 @@ import { JwtGuard } from '../common/guards/jwt.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RoleName } from 'generated/prisma/enums';
+import { CreatePaymentDto } from './dto/payment.dto';
 
 @UseGuards(JwtGuard, RolesGuard)
 @Controller('order')
@@ -23,14 +24,41 @@ export class OrderController {
 
   @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
+  createOrder(@Body() createOrderDto: CreateOrderDto) {
+    return this.orderService.createOrder(createOrderDto);
+  }
+
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
+  @Post('hirepurchase')
+  createHirePurchaseOrder(@Body() createOrderDto: CreateOrderDto) {
+    return this.orderService.createHirePurchaseOrder(createOrderDto);
+  }
+
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
+  @Post('hirepurchase/payment')
+  createHirePurchaseOrderPayment(@Body() paymentDto: CreatePaymentDto) {
+    return this.orderService.saveHirePurchaseOrderPaymentForAPaymentSchedule(
+      paymentDto,
+    );
   }
 
   @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
   @Get()
-  findAll() {
-    return this.orderService.findAll();
+  getAllOrders() {
+    return this.orderService.getAllOrders();
+  }
+
+  @Get('schedule/:id/payments')
+  getHirePurchaseOrderPaymentsForAPaymentSchedule(@Param('id') id: string) {
+    return this.orderService.getHirePurchaseOrderPaymentsForAPaymentSchedule(
+      id,
+    );
+  }
+
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
+  @Get('hirepurchase')
+  getAllHirePurchaseOrders() {
+    return this.orderService.getAllHirePurchaseOrders();
   }
 
   @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
@@ -45,7 +73,7 @@ export class OrderController {
   }
 
   @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
-  @Patch(':id')
+  @Patch()
   update(@Body() updateOrderDto: UpdateOrderDto) {
     return this.orderService.update(updateOrderDto);
   }

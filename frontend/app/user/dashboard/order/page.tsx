@@ -5,8 +5,6 @@ import { DataTable } from "@/components/DataTable";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Order from "@/components/Order";
-import EditOrder from "@/components/EditOrder";
-import DeleteOrder from "@/components/DeleteOrder";
 
 export type Order = {
   id: string;

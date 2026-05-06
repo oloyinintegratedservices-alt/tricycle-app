@@ -83,4 +83,9 @@ export class UserController {
   async getStaffs(@Query() query: GetUsersDto) {
     return this.userService.getStaffs(query);
   }
+
+  @Get('payouts')
+  async getUserPayouts(@GetUser('userId') userId: string) {
+    return this.userService.getUserPayouts(userId);
+  }
 }

@@ -28,7 +28,7 @@ export default function AdminNavbar({
           <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
             <UserStar />
           </div>
-          <span className="hidden md:block text-sm font-medium">Admin</span>
+          {/* <span className="hidden md:block text-sm font-medium">Admin</span> */}
         </div>
       </div>
     </header>

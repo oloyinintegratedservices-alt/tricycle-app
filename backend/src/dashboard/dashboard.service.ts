@@ -140,91 +140,124 @@ export class DashboardService {
     startDate.setDate(now.getDate() - 29);
     startDate.setHours(0, 0, 0, 0);
 
-    const [totalOrders, totalInvestments, recentOrders, recentInvestments] =
-      await this.prisma.$transaction([
-        this.prisma.order.count({
-          where: {
+    const [
+      totalOrders,
+      totalInvestments,
+      totalInvested,
+      totalExpected,
+      totalPayouts,
+      recentOrders,
+      recentInvestments,
+    ] = await this.prisma.$transaction([
+      this.prisma.order.count({
+        where: {
+          userId,
+        },
+      }),
+
+      this.prisma.investment.count({
+        where: {
+          userId,
+        },
+      }),
+
+      this.prisma.investment.aggregate({
+        where: {
+          userId,
+        },
+        _sum: {
+          investedAmount: true,
+        },
+      }),
+
+      this.prisma.investment.aggregate({
+        where: {
+          userId,
+        },
+        _sum: {
+          expectedReturn: true,
+        },
+      }),
+
+      this.prisma.payout.aggregate({
+        where: {
+          investment: {
             userId,
           },
-        }),
+        },
+        _sum: {
+          amount: true,
+        },
+      }),
 
-        this.prisma.investment.count({
-          where: {
-            userId,
-          },
-        }),
-
-        // this.prisma.order.aggregate({
-        //   where: {
-        //     status: OrderStatus.ACTIVE,
-        //   },
-        //   _sum: {
-        //     totalPrice: true,
-        //   },
-        // }),
-
-        this.prisma.order.findMany({
-          where: {
-            userId,
-          },
-          take: 5,
-          orderBy: { createdAt: 'desc' },
-          select: {
-            id: true,
-            totalPrice: true,
-            status: true,
-            createdAt: true,
-            orderType: true,
-            user: {
-              select: {
-                id: true,
-                email: true,
-                fullname: true,
-              },
-            },
-            tricycle: {
-              select: {
-                chasisNumber: true,
-                engineNumber: true,
-                model: true,
-              },
+      this.prisma.order.findMany({
+        where: {
+          userId,
+        },
+        take: 5,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          totalPrice: true,
+          status: true,
+          createdAt: true,
+          orderType: true,
+          user: {
+            select: {
+              id: true,
+              email: true,
+              fullname: true,
             },
           },
-        }),
+          tricycle: {
+            select: {
+              chasisNumber: true,
+              engineNumber: true,
+              model: true,
+            },
+          },
+        },
+      }),
 
-        this.prisma.investment.findMany({
-          where: {
-            userId,
-          },
-          take: 5,
-          orderBy: { createdAt: 'desc' },
-          select: {
-            id: true,
-            status: true,
-            expectedReturn: true,
-            investedAmount: true,
-            createdAt: true,
-            user: {
-              select: {
-                id: true,
-                email: true,
-                fullname: true,
-              },
-            },
-            tricycle: {
-              select: {
-                chasisNumber: true,
-                engineNumber: true,
-                model: true,
-              },
+      this.prisma.investment.findMany({
+        where: {
+          userId,
+        },
+        take: 5,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          status: true,
+          expectedReturn: true,
+          investedAmount: true,
+          createdAt: true,
+          user: {
+            select: {
+              id: true,
+              email: true,
+              fullname: true,
             },
           },
-        }),
-      ]);
+          tricycle: {
+            select: {
+              chasisNumber: true,
+              engineNumber: true,
+              model: true,
+            },
+          },
+        },
+      }),
+    ]);
 
     return {
       totalOrders,
       totalInvestments,
+      totalInvested: totalInvested._sum.investedAmount,
+      totalExpected: totalExpected._sum.expectedReturn,
+      totalPayouts: totalPayouts._sum.amount,
+      totalBalance:
+        (totalExpected._sum.expectedReturn ?? 0) -
+        (totalPayouts._sum.amount ?? 0),
       recentOrders,
       recentInvestments,
     };

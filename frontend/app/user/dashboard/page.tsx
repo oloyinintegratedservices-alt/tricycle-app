@@ -21,7 +21,18 @@ const UserDashboard = () => {
     },
   });
 
-  if (isLoading) {
+  const { data: user, isLoading: isLoadingUser } = useQuery({
+    queryKey: ["user"],
+    queryFn: async () => {
+      const res = await axios.get("http://localhost:3002/api/auth/me", {
+        withCredentials: true,
+      });
+
+      return res.data;
+    },
+  });
+
+  if (isLoading || isLoadingUser) {
     return (
       <div>
         <Skeleton />
@@ -31,18 +42,25 @@ const UserDashboard = () => {
 
   if (!data) return null;
 
+  console.log(user);
+
   return (
     <div className="bg-white">
-      <h2 className="text-3xl font-bold">Welcome</h2>
-      <div className="md:grid grid-cols-2 gap-8 my-4">
+      <h2 className="text-3xl font-bold">
+        Welcome {user?.fullname?.split(" ")[0]}
+      </h2>
+      <div className="md:grid grid-cols-4 gap-8 my-4">
         <div className="p-4 bg-green-800 rounded-md text-white flex gap-x-4 ">
           <div className="flex justify-center items-center w-9 h-9 bg-white rounded-md text-blue-950 p-2">
             <DollarSign className="w-4 h-4" />
           </div>
           <div className="m-0">
-            <h3 className="m-0">Total Orders</h3>
-            <span className="text-lg font-semibold">
-              {data?.totalOrders ?? 0}
+            <h3 className="m-0">Total Investments</h3>
+            <span className="text-2xl font-semibold">
+              {new Intl.NumberFormat("en-NG", {
+                style: "currency",
+                currency: "NGN",
+              }).format(data?.totalInvested)}
             </span>
           </div>
         </div>
@@ -51,16 +69,47 @@ const UserDashboard = () => {
             <ChartAreaIcon className="w-4 h-4" />
           </div>
           <div className="m-0">
-            <h3 className="m-0">Total Investments</h3>
-            <span className="text-lg font-semibold">
-              {" "}
-              {data?.totalInvestments ?? 0}
+            <h3 className="m-0">Total Returns</h3>
+            <span className="text-2xl font-semibold">
+              {new Intl.NumberFormat("en-NG", {
+                style: "currency",
+                currency: "NGN",
+              }).format(data?.totalExpected)}
+            </span>
+          </div>
+        </div>
+        <div className="p-4 bg-red-900 rounded-md text-white flex gap-x-4 ">
+          <div className="flex justify-center items-center w-9 h-9 bg-white rounded-md text-green-800 p-2">
+            <ChartAreaIcon className="w-4 h-4" />
+          </div>
+          <div className="m-0">
+            <h3 className="m-0">Total Payouts</h3>
+            <span className="text-2xl font-semibold">
+              {new Intl.NumberFormat("en-NG", {
+                style: "currency",
+                currency: "NGN",
+              }).format(data?.totalPayouts)}
+            </span>
+          </div>
+        </div>
+        <div className="p-4 bg-blue-500 rounded-md text-white flex gap-x-4 ">
+          <div className="flex justify-center items-center w-9 h-9 bg-white rounded-md text-green-800 p-2">
+            <ChartAreaIcon className="w-4 h-4" />
+          </div>
+          <div className="m-0">
+            <h3 className="m-0">Total Balance</h3>
+            <span className="text-2xl font-semibold">
+              {new Intl.NumberFormat("en-NG", {
+                style: "currency",
+                currency: "NGN",
+              }).format(data?.totalBalance)}
+              {/* {data?.totalBalance ?? 0} */}
             </span>
           </div>
         </div>
       </div>
       <div className="space-y-4">
-        <RecentOrders orders={data?.recentOrders as Order[]} />
+        {/* <RecentOrders orders={data?.recentOrders as Order[]} /> */}
 
         <RecentInvestments
           investments={data?.recentInvestments as Investment[]}

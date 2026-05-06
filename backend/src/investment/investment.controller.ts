@@ -15,6 +15,7 @@ import { JwtGuard } from '../common/guards/jwt.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RoleName } from 'generated/prisma/enums';
+import { CreatePayoutDto } from './dto/create-payout.dto';
 
 @UseGuards(JwtGuard, RolesGuard)
 @Controller('investment')
@@ -42,6 +43,20 @@ export class InvestmentController {
   @Get(':id/payoutschedules')
   getRepayoutschedules(@Param('id') id: string) {
     return this.investmentService.getPayoutSchedules(id);
+  }
+
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
+  @Post('payout')
+  saveInvestmentPayoutForAPayoutSchedule(@Body() payoutDto: CreatePayoutDto) {
+    return this.investmentService.saveInvestmentPayoutForAPayoutSchedule(
+      payoutDto,
+    );
+  }
+
+  @Get('schedule/:id/payouts')
+  getInvestmentPayoutsForAPayoutSchedule(@Param('id') id: string) {
+    // console.log(id);
+    return this.investmentService.getInvestmentPayoutsForAPayoutSchedule(id);
   }
 
   @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)

@@ -27,9 +27,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { NumericFormat } from "react-number-format";
+import { Input } from "./ui/input";
+import { combineDateAndTime } from "@/utils/date";
 
 const editPayoutScheduleFormSchema = z.object({
   status: z.string(),
+  amount: z.coerce.number<string>().positive(),
+  paymentDate: z.date(),
+  paymentTime: z.string(),
+  method: z.string(),
 });
 
 const STATUSES = ["PENDING", "PAID"];
@@ -46,12 +62,13 @@ const EditPayoutSchedule = ({ payoutschedule }: { payoutschedule: any }) => {
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-      toast.success("Repayment schedule details has been updated successfully");
+      toast.success("Payout schedule details has been updated successfully");
 
-      const res = await axios.patch(
-        `http://localhost:3002/api/payoutschedule/${payoutschedule.id}`,
+      const res = await axios.post(
+        `http://localhost:3002/api/investment/payout`,
         {
-          id: payoutschedule.id,
+          payoutScheduleId: payoutschedule.id,
+          investmentId: payoutschedule.investmentId,
           ...data,
         },
         { withCredentials: true },
@@ -69,7 +86,12 @@ const EditPayoutSchedule = ({ payoutschedule }: { payoutschedule: any }) => {
   });
 
   async function onSubmit(values: any) {
-    mutation.mutate(values);
+    console.log(values);
+
+    mutation.mutate({
+      ...values,
+      payoutDate: combineDateAndTime(values.paymentDate, values.paymentTime),
+    });
   }
 
   return (
@@ -83,6 +105,116 @@ const EditPayoutSchedule = ({ payoutschedule }: { payoutschedule: any }) => {
         </DialogHeader>
         <div>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <Controller
+              name="amount"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Amount paid</FieldLabel>
+                  <NumericFormat
+                    thousandSeparator
+                    allowNegative={false}
+                    value={field.value}
+                    onValueChange={(values) => {
+                      field.onChange(values.floatValue);
+                    }}
+                    className="p-3 py-1 border outline-0 w-full rounded-xl focus:shadow-md"
+                  />
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="paymentDate"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Payment Date</FieldLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        data-empty={field.value}
+                        className="w-70 justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
+                      >
+                        <CalendarIcon />
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                      />
+                    </PopoverContent>
+                  </Popover>
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="paymentTime"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field className="w-32">
+                  <FieldLabel htmlFor="time-picker-optional">Time</FieldLabel>
+                  <Input
+                    type="time"
+                    value={field.value}
+                    onChange={field.onChange}
+                    step="1"
+                    defaultValue={field.value}
+                    className="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="method"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Payment Method</FieldLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select payment method" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Payment Method</SelectLabel>
+                        <SelectItem value="CASH">Cash</SelectItem>
+                        <SelectItem value="CARD">Card</SelectItem>
+                        <SelectItem value="TRANSFER">Transfer</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
             <Controller
               name="status"
               control={form.control}

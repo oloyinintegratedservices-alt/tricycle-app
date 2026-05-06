@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateInvestmentDto } from './dto/create-investment.dto';
 import { UpdateInvestmentDto } from './dto/update-investment.dto';
 import { PrismaService } from '../prisma.service';
+import { CreatePayoutDto } from './dto/create-payout.dto';
 
 @Injectable()
 export class InvestmentService {
@@ -167,6 +168,9 @@ export class InvestmentService {
       where: {
         investmentId,
       },
+      orderBy: {
+        installmentNumber: 'asc',
+      },
     });
   }
 
@@ -194,6 +198,47 @@ export class InvestmentService {
     return this.prisma.investment.delete({
       where: {
         id,
+      },
+    });
+  }
+
+  async saveInvestmentPayoutForAPayoutSchedule(payoutDto: CreatePayoutDto) {
+    if (payoutDto.status) {
+      await this.prisma.payoutSchedule.update({
+        where: {
+          id: payoutDto.payoutScheduleId,
+        },
+        data: {
+          status: payoutDto.status,
+        },
+      });
+    }
+
+    return this.prisma.payout.create({
+      data: {
+        investmentId: payoutDto.investmentId,
+        payoutScheduleId: payoutDto.payoutScheduleId,
+        amount: payoutDto.amount,
+        payoutDate: payoutDto.payoutDate,
+        method: payoutDto.method,
+      },
+    });
+  }
+
+  getInvestmentPayoutsForAPayoutSchedule(payoutScheduleId: string) {
+    return this.prisma.payout.findMany({
+      where: {
+        payoutScheduleId,
+      },
+      include: {
+        payoutSchedule: {
+          select: {
+            installmentNumber: true,
+          },
+        },
+      },
+      orderBy: {
+        payoutDate: 'desc',
       },
     });
   }

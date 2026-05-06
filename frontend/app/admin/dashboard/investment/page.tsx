@@ -44,7 +44,7 @@ export const columns: ColumnDef<Investment>[] = [
     header: () => <div className="text-left">Total Invested Amount (₦)</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("investedAmount"));
-      const formatted = new Intl.NumberFormat("en-US", {
+      const formatted = new Intl.NumberFormat("en-NG", {
         style: "currency",
         currency: "NGN",
       }).format(amount);
@@ -57,7 +57,7 @@ export const columns: ColumnDef<Investment>[] = [
     header: () => <div className="text-left">Total Payout (₦)</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("expectedReturn"));
-      const formatted = new Intl.NumberFormat("en-US", {
+      const formatted = new Intl.NumberFormat("en-NG", {
         style: "currency",
         currency: "NGN",
       }).format(amount);

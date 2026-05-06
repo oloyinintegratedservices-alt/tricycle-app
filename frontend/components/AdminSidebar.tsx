@@ -91,14 +91,31 @@ const AdminSidebar = ({ closeSidebar }: { closeSidebar?: () => void }) => {
               href: "/admin/dashboard/staff/add",
             },
             {
-              name: "Customers",
+              name: "Users or Customers",
               icon: User,
               href: "/admin/dashboard/user",
             },
             {
-              name: "Add Customer",
+              name: "Add User or Customer",
               icon: UserRoundPlusIcon,
               href: "/admin/dashboard/user/add",
+            },
+          ],
+        }}
+      />
+      <DashboardMenu
+        menu={{
+          title: "Hire Purchase",
+          children: [
+            {
+              name: "All Orders",
+              icon: BadgeDollarSign,
+              href: "/admin/dashboard/hirepurchase",
+            },
+            {
+              name: "New Order",
+              icon: SquarePercent,
+              href: "/admin/dashboard/hirepurchase/add",
             },
           ],
         }}

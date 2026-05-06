@@ -36,6 +36,15 @@ const Order = ({ order }: { order: any }) => {
         <div>Customer: {order.fullname}</div>
         <div>Order Status: {order.status}</div>
         {order.orderType == "HIRE_PURCHASE" && (
+          <div>Guarantor Name: {order.guarantorName}</div>
+        )}
+        {order.orderType == "HIRE_PURCHASE" && (
+          <div>Branch Chairman Name: {order.branchChairman}</div>
+        )}
+        {order.orderType == "HIRE_PURCHASE" && (
+          <div>Address: {order.address}</div>
+        )}
+        {order.orderType == "HIRE_PURCHASE" && (
           <RepaymentSchedule order={order} />
         )}
 

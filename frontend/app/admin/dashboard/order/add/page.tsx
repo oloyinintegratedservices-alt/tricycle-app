@@ -120,6 +120,7 @@ const Page = () => {
     defaultValues: {
       tricycleId: "",
       userId: "",
+      orderType: "DIRECT_PURCHASE",
     },
   });
 
@@ -268,6 +269,7 @@ const Page = () => {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  disabled
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select order type" />

@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Field,
-  FieldLabel,
-  FieldError,
-  FieldDescription,
-} from "@/components/ui/field";
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,7 +30,6 @@ import {
 } from "@/components/ui/select";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -43,23 +37,49 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
-const newInvestmentFormSchema = z
+const newOrderFormSchema = z
   .object({
     tricycleId: z.string().nonempty(),
+    orderType: z.enum(["DIRECT_PURCHASE", "HIRE_PURCHASE"]),
     userId: z.string().nonempty(),
 
-    scheduleType: z.enum(["WEEKLY", "MONTHLY"]).default("MONTHLY"),
+    scheduleType: z.enum(["WEEKLY", "MONTHLY"]).optional(),
 
     weeks: z.coerce.number<string>().int().positive().optional(),
     months: z.coerce.number<string>().int().positive().optional(),
 
-    investedAmount: z.coerce.number<string>().positive().optional(),
-    expectedReturn: z.coerce.number<string>().positive().optional(),
+    totalPrice: z.coerce.number<string>().positive().optional(),
+    downPayment: z.coerce.number<string>().positive().optional(),
 
-    startDate: z.date(),
+    startDate: z.date().optional(),
+
+    branchChairman: z.string().nonempty(),
+    guarantorName: z.string().nonempty(),
+    address: z.string().nonempty(),
   })
   .superRefine((data, ctx) => {
+    // HIRE PURCHASE rules
+    if (data.orderType === "HIRE_PURCHASE") {
+      if (!data.startDate) {
+        ctx.addIssue({
+          path: ["startDate"],
+          message: "Start date is required",
+          code: z.ZodIssueCode.custom,
+        });
+      }
+
+      if (!data.scheduleType) {
+        ctx.addIssue({
+          path: ["scheduleType"],
+          message: "Schedule type is required",
+          code: z.ZodIssueCode.custom,
+        });
+      }
+    }
+
     // WEEKLY logic
     if (data.scheduleType === "WEEKLY") {
       if (!data.weeks) {
@@ -101,18 +121,19 @@ const newInvestmentFormSchema = z
 
 const Page = () => {
   const form = useForm({
-    resolver: zodResolver(newInvestmentFormSchema),
+    resolver: zodResolver(newOrderFormSchema),
     defaultValues: {
       tricycleId: "",
       userId: "",
-      scheduleType: "MONTHLY",
+      orderType: "HIRE_PURCHASE",
+      scheduleType: "WEEKLY",
     },
   });
 
   const mutation = useMutation({
-    mutationFn: async (data: z.infer<typeof newInvestmentFormSchema>) => {
+    mutationFn: async (data: z.infer<typeof newOrderFormSchema>) => {
       const res = await axios.post(
-        "http://localhost:3002/api/investment",
+        "http://localhost:3002/api/order/hirepurchase",
         data,
         {
           withCredentials: true,
@@ -123,7 +144,7 @@ const Page = () => {
     },
     onSuccess: () => {
       // toast message
-      toast.success("New Investment added successfully");
+      toast.success("New order added successfully");
       form.reset();
     },
     onError: (err: any) => {
@@ -131,28 +152,32 @@ const Page = () => {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof newInvestmentFormSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof newOrderFormSchema>) {
+    // console.log(values);
 
-    // let payload: any = {
-    //   tricycleId: values.tricycleId,
-    //   userId: values.userId,
-    //   orderType: values.orderType,
-    //   totalPrice: values.totalPrice,
-    // };
+    let payload: any = {
+      tricycleId: values.tricycleId,
+      userId: values.userId,
+      orderType: values.orderType,
+      totalPrice: values.totalPrice,
+    };
 
-    // if (values.orderType == "HIRE_PURCHASE") {
-    //   payload = {
-    //     ...payload,
-    //     scheduleType: values.scheduleType,
-    //     weeks: values.weeks,
-    //     months: values.months,
-    //     startDate: values.startDate?.toUTCString(),
-    //   };
-    // }
+    if (values.orderType == "HIRE_PURCHASE") {
+      payload = {
+        ...payload,
+        scheduleType: values.scheduleType,
+        weeks: values.weeks,
+        months: values.months,
+        downPayment: values.downPayment,
+        startDate: values.startDate?.toUTCString(),
+        guarantorName: values.guarantorName,
+        branchChairman: values.branchChairman,
+        address: values.address,
+      };
+    }
 
     // console.log(payload);
-    mutation.mutate(values);
+    mutation.mutate(payload);
   }
 
   const { data } = useQuery({
@@ -201,7 +226,7 @@ const Page = () => {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold">Create Investment</h2>
+      <h2 className="text-3xl font-bold">Create Hire Purchase Order</h2>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="space-y-4 mt-4">
           <Controller
@@ -243,48 +268,11 @@ const Page = () => {
           />
 
           <Controller
-            name="startDate"
+            name="orderType"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field>
-                <FieldLabel htmlFor={field.name}>Payout Start Date</FieldLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      data-empty={field.value}
-                      className="w-70 justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
-                    >
-                      <CalendarIcon />
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                    />
-                  </PopoverContent>
-                </Popover>
-
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-
-          <Controller
-            name="scheduleType"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Payout Schedule</FieldLabel>
+                <FieldLabel htmlFor={field.name}>Purchase Type</FieldLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -295,13 +283,16 @@ const Page = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Schedule Type</SelectLabel>
-                      <SelectItem value="WEEKLY">Weekly</SelectItem>
-                      <SelectItem value="MONTHLY">Monthly</SelectItem>
+                      <SelectLabel>Order Type</SelectLabel>
+                      <SelectItem value="DIRECT_PURCHASE">
+                        Direct Purchase
+                      </SelectItem>
+                      <SelectItem value="HIRE_PURCHASE">
+                        Hire Purchase
+                      </SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -309,22 +300,39 @@ const Page = () => {
             )}
           />
 
-          {form.watch("scheduleType") == "WEEKLY" && (
+          {form.watch("orderType") == "HIRE_PURCHASE" && (
             <Controller
-              name="weeks"
+              name="startDate"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field>
-                  <FieldLabel htmlFor={field.name}>Number of Weeks</FieldLabel>
+                  <FieldLabel htmlFor={field.name}>
+                    Repayment Start Date
+                  </FieldLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        data-empty={field.value}
+                        className="w-70 justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
+                      >
+                        <CalendarIcon />
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                      />
+                    </PopoverContent>
+                  </Popover>
 
-                  <NumericFormat
-                    allowNegative={false}
-                    value={field.value}
-                    onValueChange={(values) => {
-                      field.onChange(values.floatValue);
-                    }}
-                    className="p-3 py-1 border outline-0 w-full rounded-xl focus:shadow-md"
-                  />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -333,21 +341,32 @@ const Page = () => {
             />
           )}
 
-          {form.watch("scheduleType") == "MONTHLY" && (
+          {form.watch("orderType") == "HIRE_PURCHASE" && (
             <Controller
-              name="months"
+              name="scheduleType"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field>
-                  <FieldLabel htmlFor={field.name}>Number of months</FieldLabel>
-                  <NumericFormat
-                    allowNegative={false}
-                    value={field.value}
-                    onValueChange={(values) => {
-                      field.onChange(values.floatValue);
-                    }}
-                    className="p-3 py-1 border outline-0 w-full rounded-xl focus:shadow-md"
-                  />
+                  <FieldLabel htmlFor={field.name}>
+                    Repayment Schedule
+                  </FieldLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    disabled
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select order type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Schedule Type</SelectLabel>
+                        <SelectItem value="WEEKLY">Weekly</SelectItem>
+                        <SelectItem value="MONTHLY">Monthly</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -355,16 +374,127 @@ const Page = () => {
               )}
             />
           )}
+
+          {form.watch("orderType") == "HIRE_PURCHASE" &&
+            form.watch("scheduleType") == "WEEKLY" && (
+              <Controller
+                name="weeks"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>
+                      Number of Weeks
+                    </FieldLabel>
+
+                    <NumericFormat
+                      allowNegative={false}
+                      value={field.value}
+                      onValueChange={(values) => {
+                        field.onChange(values.floatValue);
+                      }}
+                      className="p-3 py-1 border outline-0 w-full rounded-xl focus:shadow-md"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            )}
+
+          {form.watch("orderType") == "HIRE_PURCHASE" &&
+            form.watch("scheduleType") == "MONTHLY" && (
+              <Controller
+                name="months"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>
+                      Number of months
+                    </FieldLabel>
+                    <NumericFormat
+                      allowNegative={false}
+                      value={field.value}
+                      onValueChange={(values) => {
+                        field.onChange(values.floatValue);
+                      }}
+                      className="p-3 py-1 border outline-0 w-full rounded-xl focus:shadow-md"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            )}
 
           <Controller
-            name="investedAmount"
+            name="guarantorName"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field>
-                <FieldLabel htmlFor={field.name}>Amount Invested</FieldLabel>
-                <FieldDescription>
-                  Amount Customer invested to buy Tricycle.
-                </FieldDescription>
+                <FieldLabel htmlFor={field.name}>
+                  Guarantor Full Name
+                </FieldLabel>
+                <Input
+                  {...field}
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
+                  placeholder=""
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+
+          <Controller
+            name="branchChairman"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>
+                  Branch Chairman Full Name
+                </FieldLabel>
+                <Input
+                  {...field}
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
+                  placeholder=""
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+
+          <Controller
+            name="address"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Address</FieldLabel>
+                <Textarea
+                  {...field}
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
+                  placeholder=""
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+
+          <Controller
+            name="totalPrice"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Current Price</FieldLabel>
                 <NumericFormat
                   thousandSeparator
                   allowNegative={false}
@@ -382,31 +512,30 @@ const Page = () => {
             )}
           />
 
-          <Controller
-            name="expectedReturn"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Expected Return</FieldLabel>
-                <FieldDescription>
-                  Amount Tricycle is sold in installment
-                </FieldDescription>
-                <NumericFormat
-                  thousandSeparator
-                  allowNegative={false}
-                  value={field.value}
-                  onValueChange={(values) => {
-                    field.onChange(values.floatValue);
-                  }}
-                  className="p-3 py-1 border outline-0 w-full rounded-xl focus:shadow-md"
-                />
+          {form.watch("orderType") == "HIRE_PURCHASE" && (
+            <Controller
+              name="downPayment"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Down Payment</FieldLabel>
+                  <NumericFormat
+                    thousandSeparator
+                    allowNegative={false}
+                    value={field.value}
+                    onValueChange={(values) => {
+                      field.onChange(values.floatValue);
+                    }}
+                    className="p-3 py-1 border outline-0 w-full rounded-xl focus:shadow-md"
+                  />
 
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          )}
 
           <Controller
             name="userId"
@@ -451,7 +580,7 @@ const Page = () => {
             disabled={mutation.isPending}
             className="w-full cursor-pointer mt-4"
           >
-            Create
+            Add
           </Button>
         </div>
       </form>

@@ -18,7 +18,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import axios from "axios";
 
-const DeleteOrder = ({ order }: { order: any }) => {
+const DeleteOrder = ({
+  order,
+  nameOfQueries = "orders",
+}: {
+  order: any;
+  nameOfQueries?: string;
+}) => {
   const [open, setOpen] = useState(false);
 
   const queryClient = useQueryClient();
@@ -36,7 +42,7 @@ const DeleteOrder = ({ order }: { order: any }) => {
     },
     onSuccess: () => {
       toast.success("Order has been deleted successfully");
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: [nameOfQueries] });
       setOpen(false);
     },
     onError: (err: any) => {

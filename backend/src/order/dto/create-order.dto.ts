@@ -1,5 +1,13 @@
-import { IsString, IsOptional, IsNumber, Min } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  Min,
+  IsEnum,
+  ValidateIf,
+} from 'class-validator';
 import { Type } from 'class-transformer';
+import { OrderType } from 'generated/prisma/enums';
 
 export class CreateOrderDto {
   @IsOptional()
@@ -21,8 +29,8 @@ export class CreateOrderDto {
   @Min(1)
   downPayment?: number;
 
-  @IsString()
-  orderType!: string;
+  @IsEnum(OrderType)
+  orderType!: OrderType;
 
   @IsString()
   scheduleType?: 'WEEKLY' | 'MONTHLY';
@@ -38,4 +46,20 @@ export class CreateOrderDto {
 
   @IsString()
   userId!: string;
+
+  @ValidateIf((o) => o.type === OrderType.HIRE_PURCHASE)
+  @IsString()
+  address?: string;
+
+  @ValidateIf((o) => o.type === OrderType.HIRE_PURCHASE)
+  @IsString()
+  branchChairman?: string;
+
+  @ValidateIf((o) => o.type === OrderType.HIRE_PURCHASE)
+  @IsString()
+  guarantorName?: string;
+
+  @ValidateIf((o) => o.type === OrderType.HIRE_PURCHASE)
+  @IsString()
+  fullname?: string;
 }

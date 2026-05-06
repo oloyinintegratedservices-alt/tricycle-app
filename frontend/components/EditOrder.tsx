@@ -40,7 +40,13 @@ const ORDER_STATUSES = [
   "CANCELLED",
 ];
 
-const EditOrder = ({ order }: { order: any }) => {
+const EditOrder = ({
+  order,
+  nameOfQueries = "orders",
+}: {
+  order: any;
+  nameOfQueries?: string;
+}) => {
   const [open, setOpen] = useState(false);
 
   const form = useForm({
@@ -66,7 +72,7 @@ const EditOrder = ({ order }: { order: any }) => {
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: [nameOfQueries] });
       setOpen(false);
     },
     onError: (err: any) => {

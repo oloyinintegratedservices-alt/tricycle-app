@@ -22,7 +22,18 @@ const AdminDashboard = () => {
 
   console.log(data);
 
-  if (isLoading) {
+  const { data: user, isLoading: isLoadingUser } = useQuery({
+    queryKey: ["user"],
+    queryFn: async () => {
+      const res = await axios.get("http://localhost:3002/api/auth/me", {
+        withCredentials: true,
+      });
+
+      return res.data;
+    },
+  });
+
+  if (isLoading || isLoadingUser) {
     return (
       <div>
         <Skeleton />
@@ -34,7 +45,9 @@ const AdminDashboard = () => {
 
   return (
     <div className="bg-white">
-      <h2 className="text-3xl font-bold">Welcome Admin</h2>
+      <h2 className="text-3xl font-bold">
+        Welcome {user?.fullname?.split(" ")[0]}
+      </h2>
       <div className="md:grid grid-cols-4 gap-8 mt-4">
         <div className="p-4 bg-primary rounded-md text-white flex gap-x-4 ">
           <div className="flex justify-center items-center w-9 h-9 bg-white rounded-md text-primary p-2">

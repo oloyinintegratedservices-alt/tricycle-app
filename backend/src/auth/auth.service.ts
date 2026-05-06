@@ -63,6 +63,7 @@ export class AuthService {
       user.email as string,
       roles,
       permissions,
+      user.fullname,
     );
 
     return {
@@ -202,8 +203,9 @@ export class AuthService {
     email: string,
     roles: string[],
     permissions: string[],
+    fullname: string,
   ) {
-    const payload = { userId, email, roles, permissions };
+    const payload = { userId, email, roles, permissions, fullname };
 
     const accessToken = await this.jwt.signAsync(payload, {
       expiresIn: '7d',
@@ -232,6 +234,7 @@ export class AuthService {
         decoded.email,
         decoded.roles,
         decoded.permissions,
+        decoded.fullname,
       );
     } catch (e) {
       throw new ForbiddenException('Invalid refresh token');

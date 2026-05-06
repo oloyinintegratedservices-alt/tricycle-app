@@ -8,6 +8,7 @@ import Order from "@/components/Order";
 import EditOrder from "@/components/EditOrder";
 import DeleteOrder from "@/components/DeleteOrder";
 import EditRepaymentSchedule from "./EditRepaymentSchedule";
+import PaymentHistory from "./PaymentHistory";
 
 export type RepaymentSchedule = {
   id: string;
@@ -67,6 +68,7 @@ export const columns: ColumnDef<RepaymentSchedule>[] = [
       return (
         <div className="flex gap-2">
           <EditRepaymentSchedule repaymentschedule={row.original} />
+          <PaymentHistory repaymentschedule={row.original} />
         </div>
       );
     },

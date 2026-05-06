@@ -47,18 +47,23 @@ const UserSidebar = ({ closeSidebar }: { closeSidebar?: () => void }) => {
       />
       <DashboardMenu
         menu={{
-          title: "My Tricycles",
+          title: "My Investments",
           children: [
             {
-              name: "Orders",
+              name: "Payouts History",
               icon: Caravan,
-              href: "/user/dashboard/order",
+              href: "/user/dashboard/payments",
             },
-            {
-              name: "Investments",
-              icon: ChartCandlestick,
-              href: "/user/dashboard/investment",
-            },
+            // {
+            //   name: "Orders",
+            //   icon: Caravan,
+            //   href: "/user/dashboard/order",
+            // },
+            // {
+            //   name: "Investments",
+            //   icon: ChartCandlestick,
+            //   href: "/user/dashboard/investment",
+            // },
           ],
         }}
       />
