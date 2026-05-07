@@ -221,6 +221,7 @@ export class OrderService {
         status: true,
         totalPrice: true,
         downPayment: true,
+        startDate: true,
         guarantorName: true,
         branchChairman: true,
         address: true,
@@ -242,6 +243,9 @@ export class OrderService {
 
     return orders.map(({ tricycle, user, ...order }) => ({
       ...order,
+      paymentDay: new Intl.DateTimeFormat('en-US', {
+        weekday: 'long',
+      }).format(order.startDate!),
       model: tricycle?.model,
       color: tricycle.color,
       chasisNumber: tricycle.chasisNumber,

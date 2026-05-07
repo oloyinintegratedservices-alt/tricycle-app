@@ -91,12 +91,12 @@ const AdminSidebar = ({ closeSidebar }: { closeSidebar?: () => void }) => {
               href: "/admin/dashboard/staff/add",
             },
             {
-              name: "Users or Customers",
+              name: "Users",
               icon: User,
               href: "/admin/dashboard/user",
             },
             {
-              name: "Add User or Customer",
+              name: "Add User",
               icon: UserRoundPlusIcon,
               href: "/admin/dashboard/user/add",
             },

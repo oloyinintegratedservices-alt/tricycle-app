@@ -1,12 +1,40 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import React from "react";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  getFilteredRowModel,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { DataTable } from "@/components/DataTable";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Order from "@/components/Order";
 import EditOrder from "@/components/EditOrder";
 import DeleteOrder from "@/components/DeleteOrder";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+import { Button } from "@/components/ui/button";
 
 export type Order = {
   id: string;
@@ -18,6 +46,8 @@ export type Order = {
   user: string;
   salesPrice: number;
   guarantorName: string;
+  startDate: Date;
+  paymentDay: string;
 };
 
 export const columns: ColumnDef<Order>[] = [
@@ -71,6 +101,10 @@ export const columns: ColumnDef<Order>[] = [
     },
   },
   {
+    accessorKey: "paymentDay",
+    header: "Payment Day",
+  },
+  {
     accessorKey: "status",
     header: "Status",
   },
@@ -93,6 +127,9 @@ export const columns: ColumnDef<Order>[] = [
 ];
 
 const Page = () => {
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
   const { data } = useQuery({
     queryKey: ["hirepurchaseorders"],
     queryFn: async () => {
@@ -107,12 +144,117 @@ const Page = () => {
     },
   });
 
-  console.log(data);
+  const table = useReactTable({
+    data: data ?? [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      columnFilters,
+    },
+  });
 
   return (
     <div className="space-y-4">
       <h2 className="text-3xl font-bold">Hire Purchase Orders</h2>
-      <DataTable columns={columns} data={data ?? []} />
+
+      <div className="overflow-hidden rounded-md border">
+        <div className="flex items-center py-4 ml-2">
+          <Select
+            value={
+              (table.getColumn("paymentDay")?.getFilterValue() as string) ?? ""
+            }
+            onValueChange={(value) => {
+              table.getColumn("paymentDay")?.setFilterValue(value);
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select weekday" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Weekday</SelectLabel>
+                <SelectItem value="Monday">Monday</SelectItem>
+                <SelectItem value="Tuesday">Tuesday</SelectItem>
+                <SelectItem value="Wednesday">Wednesday</SelectItem>
+                <SelectItem value="Thursday">Thursday</SelectItem>
+                <SelectItem value="Friday">Friday</SelectItem>
+                <SelectItem value="Saturday">Saturday</SelectItem>
+                <SelectItem value="Sunday">Sunday</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <div className="flex items-center justify-center space-x-2 py-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
+      </div>
     </div>
   );
 };

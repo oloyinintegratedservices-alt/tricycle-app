@@ -542,7 +542,7 @@ const Page = () => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field>
-                <FieldLabel htmlFor={field.name}>Customer</FieldLabel>
+                <FieldLabel htmlFor={field.name}>Collector</FieldLabel>
                 <Combobox
                   items={users}
                   itemToStringValue={(user: (typeof users)[number]) =>
