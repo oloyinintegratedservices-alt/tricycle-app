@@ -20,7 +20,7 @@ export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(RoleName.admin, RoleName.super_admin)
+  @Roles(RoleName.admin, RoleName.super_admin, RoleName.staff)
   @Get('admin')
   getAllStats() {
     return this.dashboardService.getAllStats();
