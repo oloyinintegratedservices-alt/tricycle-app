@@ -66,7 +66,7 @@ const PayoutHistory = ({ payoutschedule }: { payoutschedule: any }) => {
   const [open, setOpen] = useState(false);
 
   const { data } = useQuery({
-    queryKey: ["payouts"],
+    queryKey: ["payouts", [payoutschedule.id]],
     queryFn: async () => {
       const res = await axios.get(
         `http://localhost:3002/api/investment/schedule/${payoutschedule.id}/payouts`,
@@ -78,8 +78,6 @@ const PayoutHistory = ({ payoutschedule }: { payoutschedule: any }) => {
       return res.data;
     },
   });
-
-  console.log("87", data);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

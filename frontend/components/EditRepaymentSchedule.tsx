@@ -81,7 +81,9 @@ const EditRepaymentSchedule = ({
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["repaymentschedules"] });
+      queryClient.invalidateQueries({
+        queryKey: ["repaymentschedules", "payments"],
+      });
       setOpen(false);
     },
     onError: (err: any) => {

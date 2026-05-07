@@ -66,7 +66,7 @@ const PaymentHistory = ({ repaymentschedule }: { repaymentschedule: any }) => {
   const [open, setOpen] = useState(false);
 
   const { data } = useQuery({
-    queryKey: ["payments"],
+    queryKey: ["payments", repaymentschedule.id],
     queryFn: async () => {
       const res = await axios.get(
         `http://localhost:3002/api/order/schedule/${repaymentschedule.id}/payments`,
@@ -78,8 +78,6 @@ const PaymentHistory = ({ repaymentschedule }: { repaymentschedule: any }) => {
       return res.data;
     },
   });
-
-  //   console.log("87", data);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
