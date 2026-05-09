@@ -69,7 +69,7 @@ const EditRepaymentSchedule = ({
       toast.success("Repayment schedule details has been updated successfully");
 
       const res = await axios.post(
-        `http://localhost:3002/api/order/hirepurchase/payment`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/order/hirepurchase/payment`,
         {
           paymentScheduleId: repaymentschedule.id,
           orderId: repaymentschedule.orderId,

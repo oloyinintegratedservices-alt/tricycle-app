@@ -43,7 +43,7 @@ const EditStaff = ({ staff }: { staff: any }) => {
       toast.success("Staff details has been updated successfully");
 
       const res = await axios.patch(
-        `http://localhost:3002/api/user`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`,
         {
           id: staff.id,
           ...data,

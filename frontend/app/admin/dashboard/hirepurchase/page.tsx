@@ -134,7 +134,7 @@ const Page = () => {
     queryKey: ["hirepurchaseorders"],
     queryFn: async () => {
       const res = await axios.get(
-        "http://localhost:3002/api/order/hirepurchase",
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/order/hirepurchase`,
         {
           withCredentials: true,
         },

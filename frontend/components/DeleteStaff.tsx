@@ -26,7 +26,7 @@ const DeleteStaff = ({ staff }: { staff: any }) => {
   const mutation = useMutation({
     mutationFn: async () => {
       const res = await axios.delete(
-        `http://localhost:3002/api/user/${staff.id}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/${staff.id}`,
         {
           withCredentials: true,
         },

@@ -12,9 +12,12 @@ const AdminDashboard = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["stats"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3002/api/dashboard/admin", {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/dashboard/admin`,
+        {
+          withCredentials: true,
+        },
+      );
 
       return res.data;
     },
@@ -25,9 +28,12 @@ const AdminDashboard = () => {
   const { data: user, isLoading: isLoadingUser } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3002/api/auth/me", {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/me`,
+        {
+          withCredentials: true,
+        },
+      );
 
       return res.data;
     },

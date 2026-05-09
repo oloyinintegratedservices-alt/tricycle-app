@@ -126,9 +126,13 @@ const Page = () => {
 
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof newOrderFormSchema>) => {
-      const res = await axios.post("http://localhost:3002/api/order", data, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/order`,
+        data,
+        {
+          withCredentials: true,
+        },
+      );
 
       return res.data;
     },
@@ -170,9 +174,12 @@ const Page = () => {
   const { data } = useQuery({
     queryKey: ["tricycles"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3002/api/tricycle", {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/tricycle`,
+        {
+          withCredentials: true,
+        },
+      );
 
       return res.data;
     },
@@ -181,9 +188,12 @@ const Page = () => {
   const { data: usersData } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3002/api/user", {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`,
+        {
+          withCredentials: true,
+        },
+      );
 
       return res.data;
     },

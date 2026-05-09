@@ -69,7 +69,7 @@ const PaymentHistory = ({ repaymentschedule }: { repaymentschedule: any }) => {
     queryKey: ["payments", repaymentschedule.id],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:3002/api/order/schedule/${repaymentschedule.id}/payments`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/order/schedule/${repaymentschedule.id}/payments`,
         {
           withCredentials: true,
         },

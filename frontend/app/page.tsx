@@ -38,7 +38,7 @@ export default function Home() {
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof loginFormSchema>) => {
       const res = await axios.post(
-        "http://localhost:3002/api/auth/login",
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/login`,
         data,
         {
           withCredentials: true,

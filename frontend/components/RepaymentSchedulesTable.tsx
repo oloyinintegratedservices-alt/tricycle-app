@@ -80,7 +80,7 @@ const RepaymentSchedule = ({ order }: { order: any }) => {
     queryKey: ["repaymentschedules"],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:3002/api/order/${order.id}/repaymentschedules`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/order/${order.id}/repaymentschedules`,
         {
           withCredentials: true,
         },

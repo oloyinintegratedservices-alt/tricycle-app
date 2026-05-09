@@ -14,7 +14,7 @@ const UserSidebar = ({ closeSidebar }: { closeSidebar?: () => void }) => {
   const mutation = useMutation({
     mutationFn: async () => {
       const res = await axios.post(
-        "http://localhost:3002/api/auth/logout",
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/logout`,
         {},
         {
           withCredentials: true,

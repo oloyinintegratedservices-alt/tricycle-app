@@ -48,7 +48,7 @@ export default function Home() {
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof resetPasswordFormSchema>) => {
       const res = await axios.post(
-        "http://localhost:3002/api/auth/reset-password",
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/reset-password`,
         {
           password: data.password,
           token,

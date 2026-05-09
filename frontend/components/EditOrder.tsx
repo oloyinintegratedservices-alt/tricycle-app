@@ -61,7 +61,7 @@ const EditOrder = ({
       toast.success("Order details has been updated successfully");
 
       const res = await axios.patch(
-        `http://localhost:3002/api/order`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/order`,
         {
           id: order.id,
           ...data,

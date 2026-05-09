@@ -30,9 +30,13 @@ const Page = () => {
 
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof newUserFormSchema>) => {
-      const res = await axios.post("http://localhost:3002/api/user", data, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`,
+        data,
+        {
+          withCredentials: true,
+        },
+      );
 
       return res.data;
     },

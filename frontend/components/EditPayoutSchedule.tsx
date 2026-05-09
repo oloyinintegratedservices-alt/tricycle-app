@@ -65,7 +65,7 @@ const EditPayoutSchedule = ({ payoutschedule }: { payoutschedule: any }) => {
       toast.success("Payout schedule details has been updated successfully");
 
       const res = await axios.post(
-        `http://localhost:3002/api/investment/payout`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/investment/payout`,
         {
           payoutScheduleId: payoutschedule.id,
           investmentId: payoutschedule.investmentId,

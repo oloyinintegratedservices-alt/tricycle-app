@@ -32,7 +32,7 @@ const DeleteOrder = ({
   const mutation = useMutation({
     mutationFn: async () => {
       const res = await axios.delete(
-        `http://localhost:3002/api/order/${order.id}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/order/${order.id}`,
         {
           withCredentials: true,
         },

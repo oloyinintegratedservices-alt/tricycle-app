@@ -47,7 +47,7 @@ const EditTricycle = ({ tricycle }: { tricycle: any }) => {
       toast.success("Tricycle details has been updated successfully");
 
       const res = await axios.patch(
-        `http://localhost:3002/api/tricycle`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/tricycle`,
         {
           id: tricycle.id,
           ...data,

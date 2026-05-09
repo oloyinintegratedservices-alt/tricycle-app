@@ -26,7 +26,7 @@ const DeleteTricycle = ({ tricycle }: { tricycle: any }) => {
   const mutation = useMutation({
     mutationFn: async () => {
       const res = await axios.delete(
-        `http://localhost:3002/api/tricycle/${tricycle.id}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/tricycle/${tricycle.id}`,
         {
           withCredentials: true,
         },

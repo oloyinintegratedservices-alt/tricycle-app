@@ -32,7 +32,7 @@ const Page = () => {
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof newStaffFormSchema>) => {
       const res = await axios.post(
-        "http://localhost:3002/api/user/staff",
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/staff`,
         data,
         {
           withCredentials: true,
