@@ -1,51 +1,50 @@
-import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
-import { fetchUser } from "./utils/api";
+import { NextRequest, NextResponse } from "next/server";
 
-const AUTH_ROUTES = ["/", "/signin", "/signup"];
+const PUBLIC_ROUTES = ["/", "/signin", "/signup"];
 
-// const USER_AUTH_ROUTES = ["/", "/signin", "/signup"];
+export async function proxy(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-// const ADMIN_AUTH_ROUTES = ["/signin/admin"];
+  // Skip public routes
+  if (PUBLIC_ROUTES.includes(pathname)) {
+    return NextResponse.next();
+  }
 
-export async function proxy(request: NextRequest) {
-  let pathname = request.nextUrl.pathname;
+  // Call INTERNAL Next.js API (NOT backend)
+  const res = await fetch(`${req.nextUrl.origin}/api/auth/me`, {
+    headers: {
+      cookie: req.headers.get("cookie") || "",
+    },
+  });
 
-  let user = await fetchUser(request);
+  if (!res.ok) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  const user = await res.json();
 
   console.log(user);
 
-  if (AUTH_ROUTES.includes(pathname) && user?.roles?.includes("user")) {
-    return NextResponse.redirect(new URL("/user/dashboard", request.url));
-  }
+  // Role-based protection
+  const isUserRoute = pathname.startsWith("/user");
+  const isAdminRoute = pathname.startsWith("/admin");
 
-  if (pathname.includes("/user/dashboard") && !user?.roles?.includes("user")) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
-  if (
-    AUTH_ROUTES.includes(pathname) &&
-    (user?.roles?.includes("admin") ||
-      user?.roles?.includes("super_admin") ||
-      user?.roles?.includes("staff"))
-  ) {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+  if (isUserRoute && !user?.roles?.includes("user")) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   if (
-    pathname.includes("/admin/dashboard") &&
-    !(
-      user?.roles?.includes("admin") ||
-      user?.roles?.includes("super_admin") ||
-      user?.roles?.includes("staff")
+    isAdminRoute &&
+    !user?.roles?.some((r: string) =>
+      ["admin", "super_admin", "staff"].includes(r),
     )
   ) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/", "/user/dashboard/:path*", "/admin/dashboard/:path*"],
+  matcher: ["/user/:path*", "/admin/:path*", "/dashboard/:path*"],
 };
