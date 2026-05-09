@@ -23,7 +23,7 @@ export async function proxy(req: NextRequest) {
 
   const user = await res.json();
 
-  console.log(user);
+  // console.log(user);
 
   // Role-based protection
   const isUserRoute = pathname.startsWith("/user");
@@ -46,5 +46,5 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/user/:path*", "/admin/:path*", "/dashboard/:path*"],
+  matcher: ["/user/:path*", "/admin/:path*"],
 };
