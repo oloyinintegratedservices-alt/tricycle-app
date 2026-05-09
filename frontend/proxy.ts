@@ -13,6 +13,8 @@ export async function proxy(request: NextRequest) {
 
   let user = await fetchUser(request);
 
+  console.log(user);
+
   if (AUTH_ROUTES.includes(pathname) && user?.roles?.includes("user")) {
     return NextResponse.redirect(new URL("/user/dashboard", request.url));
   }
