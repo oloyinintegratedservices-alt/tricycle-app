@@ -34,7 +34,6 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      path: '/',
     });
 
     return { user };
