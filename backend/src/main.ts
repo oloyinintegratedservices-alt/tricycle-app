@@ -6,7 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: true, // ['https://tricycle-app-kappa.vercel.app'], // reflects request origin
+    origin: ['https://tricycle-app-kappa.vercel.app'], // reflects request origin
     credentials: true, // IMPORTANT for cookies
   });
 
