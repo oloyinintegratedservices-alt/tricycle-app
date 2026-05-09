@@ -47,8 +47,20 @@ export default function Home() {
 
       return res.data;
     },
-    onSuccess: () => {
-      router.replace("/user/dashboard");
+    onSuccess: (data) => {
+      // console.log(data);
+      if (
+        data?.user?.roles?.some((r: string) =>
+          ["admin", "super_admin", "staff"].includes(r),
+        )
+      ) {
+        router.replace("/admin/dashboard");
+      } else if (
+        data?.user?.roles?.every((r: string) => ["user"].includes(r))
+      ) {
+        router.replace("/user/dashboard");
+      } else {
+      }
     },
     onError: (err: any) => {
       toast.error(err?.response?.data?.message);
@@ -123,7 +135,7 @@ export default function Home() {
               </div>
               <Button
                 type="submit"
-                // disabled={mutation.isPending}
+                disabled={mutation.isPending}
                 className="w-full cursor-pointer"
               >
                 Login
