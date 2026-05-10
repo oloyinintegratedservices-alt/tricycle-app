@@ -39,13 +39,13 @@ export class TricycleController {
     return this.tricycleService.findOne(id);
   }
 
-  @Roles(RoleName.admin, RoleName.staff)
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
   @Patch()
   update(@Body() updateTricycleDto: UpdateTricycleDto) {
     return this.tricycleService.update(updateTricycleDto);
   }
 
-  @Roles(RoleName.admin)
+  @Roles(RoleName.super_admin, RoleName.admin)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.tricycleService.softdelete(id);
