@@ -44,7 +44,8 @@ export default function Home() {
       return res.data;
     },
     onSuccess: (data) => {
-      // console.log(data);
+      console.log(data);
+
       localStorage.setItem("access_token", data.accessToken);
       if (
         data?.user?.roles?.some((r: string) =>

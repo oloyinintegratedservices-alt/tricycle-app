@@ -147,7 +147,7 @@ const Page = () => {
             disabled={mutation.isPending}
             className="w-full cursor-pointer mt-4"
           >
-            Add Staff
+            Add user
           </Button>
         </div>
       </form>

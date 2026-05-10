@@ -45,7 +45,7 @@ const AdminSidebar = ({ closeSidebar }: { closeSidebar?: () => void }) => {
   });
 
   return (
-    <div className="w-64 h-full overflow-y-auto border-r bg-white">
+    <div className="w-64 h-full overflow-y-auto border-r bg-white pb-4">
       <div className="p-4 border-b-2">Oloyin Integrated Services</div>
       <DashboardMenu
         menu={{
