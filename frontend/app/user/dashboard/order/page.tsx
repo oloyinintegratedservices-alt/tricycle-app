@@ -94,12 +94,7 @@ const Page = () => {
   const { data } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/order`,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await axios.get(`/api/user/order`);
 
       return res.data;
     },

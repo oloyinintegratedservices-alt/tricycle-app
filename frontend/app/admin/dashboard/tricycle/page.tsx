@@ -83,12 +83,7 @@ const Page = () => {
   const { data } = useQuery({
     queryKey: ["tricycles"],
     queryFn: async () => {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/tricycle`,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await axios.get(`/api/tricycle`);
 
       return res.data;
     },

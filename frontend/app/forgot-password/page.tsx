@@ -34,13 +34,7 @@ export default function Home() {
 
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof forgotPasswordFormSchema>) => {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/forgot-password`,
-        data,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await axios.post(`/api/auth/forgot-password`, data);
 
       return res.data;
     },

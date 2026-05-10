@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button";
 import { EyeIcon, EyeOffIcon, MailIcon } from "lucide-react";
-import axios from "@/lib/axios";
+import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -37,14 +37,12 @@ export default function Home() {
 
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof loginFormSchema>) => {
-      const res = await axios.post(`api/auth/login`, data, {
-        withCredentials: true,
-      });
+      const res = await axios.post(`api/auth/login`, data);
 
       return res.data;
     },
     onSuccess: (data) => {
-      console.log(data);
+      // console.log(data);
 
       localStorage.setItem("access_token", data.accessToken);
       if (

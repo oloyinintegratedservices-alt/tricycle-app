@@ -69,7 +69,7 @@ const PayoutHistory = ({ payoutschedule }: { payoutschedule: any }) => {
     queryKey: ["payouts", [payoutschedule.id]],
     queryFn: async () => {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/investment/schedule/${payoutschedule.id}/payouts`,
+        `/api/investment/schedule/${payoutschedule.id}/payouts`,
         {
           withCredentials: true,
         },

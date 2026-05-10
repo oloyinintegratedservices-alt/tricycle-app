@@ -1,21 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const cookie = req.headers.get("cookie");
+  try {
+    // Get token from cookies
+    const token = req.cookies.get("token")?.value;
 
-  // console.log(cookie);
+    if (!token) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
 
-  const res = await fetch(`${process.env.BASE_URL}/api/auth/me`, {
-    headers: {
-      cookie: cookie || "",
-    },
-    cache: "no-store",
-  });
+    // Call backend API
+    const backendRes = await fetch(`${process.env.BASE_URL}/api/auth/me`, {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    });
 
-  if (!res.ok) {
-    return NextResponse.json(null, { status: 401 });
+    if (!backendRes.ok) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const data = await backendRes.json();
+
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
-
-  const data = await res.json();
-  return NextResponse.json(data);
 }

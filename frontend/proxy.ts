@@ -10,11 +10,12 @@ export async function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Call INTERNAL Next.js API (NOT backend)
+  // Call INTERNAL Next.js API
   const res = await fetch(`${req.nextUrl.origin}/api/auth/me`, {
     headers: {
       cookie: req.headers.get("cookie") || "",
     },
+    credentials: "include",
   });
 
   if (!res.ok) {
@@ -22,8 +23,6 @@ export async function proxy(req: NextRequest) {
   }
 
   const user = await res.json();
-
-  console.log(user);
 
   // Role-based protection
   const isUserRoute = pathname.startsWith("/user");

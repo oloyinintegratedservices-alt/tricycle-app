@@ -31,12 +31,7 @@ const DeleteOrder = ({
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/order/${order.id}`,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await axios.delete(`/api/order/${order.id}`);
 
       return res.data;
     },

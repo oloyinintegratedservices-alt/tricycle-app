@@ -13,12 +13,7 @@ const UserDashboard = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["userstats"],
     queryFn: async () => {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/dashboard/user`,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await axios.get(`/api/dashboard/user`);
 
       return res.data;
     },
@@ -27,12 +22,7 @@ const UserDashboard = () => {
   const { data: user, isLoading: isLoadingUser } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/me`,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await axios.get(`/api/auth/me`);
 
       return res.data;
     },
@@ -47,8 +37,6 @@ const UserDashboard = () => {
   }
 
   if (!data) return null;
-
-  console.log(user);
 
   return (
     <div className="bg-white">

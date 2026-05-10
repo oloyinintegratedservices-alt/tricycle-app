@@ -3,7 +3,7 @@
 import DashboardMenu from "./DashboardMenu";
 import { LayoutGrid, Caravan, ChartCandlestick, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
-import axios from "@/lib/axios";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -14,7 +14,7 @@ const UserSidebar = ({ closeSidebar }: { closeSidebar?: () => void }) => {
   const mutation = useMutation({
     mutationFn: async () => {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/logout`,
+        `/api/auth/logout`,
         {},
         {
           withCredentials: true,
@@ -25,6 +25,8 @@ const UserSidebar = ({ closeSidebar }: { closeSidebar?: () => void }) => {
     },
     onSuccess: (data) => {
       toast.success(data.message);
+
+      localStorage.clear();
 
       router.replace("/");
     },

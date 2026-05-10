@@ -49,7 +49,7 @@ const EditInvestment = ({ investment }: { investment: any }) => {
       toast.success("Investment details has been updated successfully");
 
       const res = await axios.patch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/investment`,
+        `/api/investment`,
         {
           id: investment.id,
           ...data,

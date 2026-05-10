@@ -79,12 +79,7 @@ const RepaymentSchedule = ({ order }: { order: any }) => {
   const { data } = useQuery({
     queryKey: ["repaymentschedules"],
     queryFn: async () => {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/order/${order.id}/repaymentschedules`,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await axios.get(`/api/order/${order.id}/repaymentschedules`);
 
       return res.data;
     },

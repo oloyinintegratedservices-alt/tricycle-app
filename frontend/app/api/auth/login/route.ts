@@ -13,13 +13,18 @@ export async function POST(req: NextRequest) {
 
   const data = await backendRes.json();
 
+  const token = data?.accessToken;
+
   const response = NextResponse.json(data);
 
-  // Forward backend cookie
-  const setCookie = backendRes.headers.get("set-cookie");
-
-  if (setCookie) {
-    response.headers.set("set-cookie", setCookie);
+  if (token) {
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
   }
 
   return response;

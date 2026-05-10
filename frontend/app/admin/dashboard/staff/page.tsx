@@ -62,12 +62,7 @@ const Page = () => {
   const { data } = useQuery({
     queryKey: ["staffs"],
     queryFn: async () => {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/staff`,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await axios.get(`/api/user/staff`);
 
       return res.data;
     },

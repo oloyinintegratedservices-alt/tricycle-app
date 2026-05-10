@@ -64,12 +64,7 @@ const Page = () => {
   const { data } = useQuery({
     queryKey: ["payouts"],
     queryFn: async () => {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/payouts`,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await axios.get(`/api/user/payouts`);
 
       return res.data;
     },

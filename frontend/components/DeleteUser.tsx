@@ -25,12 +25,7 @@ const DeleteUser = ({ user }: { user: any }) => {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/${user.id}`,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await axios.delete(`/api/user/${user.id}`);
 
       return res.data;
     },

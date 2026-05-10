@@ -35,13 +35,7 @@ const Page = () => {
 
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof newTricycleFormSchema>) => {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/tricycle`,
-        data,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await axios.post(`/api/tricycle`, data);
 
       return res.data;
     },

@@ -25,12 +25,7 @@ const DeleteInvestment = ({ investment }: { investment: any }) => {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/investment/${investment.id}`,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await axios.delete(`/api/investment/${investment.id}`);
 
       return res.data;
     },
