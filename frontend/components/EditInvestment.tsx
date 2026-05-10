@@ -48,14 +48,10 @@ const EditInvestment = ({ investment }: { investment: any }) => {
     mutationFn: async (data: any) => {
       toast.success("Investment details has been updated successfully");
 
-      const res = await axios.patch(
-        `/api/investment`,
-        {
-          id: investment.id,
-          ...data,
-        },
-        { withCredentials: true },
-      );
+      const res = await axios.patch(`/api/investment`, {
+        id: investment.id,
+        ...data,
+      });
 
       return res.data;
     },

@@ -4,9 +4,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/DataTable";
 import axios from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
-import Order from "@/components/Order";
-import EditOrder from "@/components/EditOrder";
-import DeleteOrder from "@/components/DeleteOrder";
 import EditRepaymentSchedule from "./EditRepaymentSchedule";
 import PaymentHistory from "./PaymentHistory";
 

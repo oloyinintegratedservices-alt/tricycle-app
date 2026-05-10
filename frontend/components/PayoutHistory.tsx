@@ -70,9 +70,6 @@ const PayoutHistory = ({ payoutschedule }: { payoutschedule: any }) => {
     queryFn: async () => {
       const res = await axios.get(
         `/api/investment/schedule/${payoutschedule.id}/payouts`,
-        {
-          withCredentials: true,
-        },
       );
 
       return res.data;

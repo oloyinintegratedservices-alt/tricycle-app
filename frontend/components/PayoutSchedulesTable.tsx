@@ -78,9 +78,6 @@ const PayoutSchedule = ({ investment }: { investment: any }) => {
     queryFn: async () => {
       const res = await axios.get(
         `/api/investment/${investment.id}/payoutschedules`,
-        {
-          withCredentials: true,
-        },
       );
 
       return res.data;

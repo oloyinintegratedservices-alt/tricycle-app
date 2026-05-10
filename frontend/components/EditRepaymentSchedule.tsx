@@ -68,15 +68,11 @@ const EditRepaymentSchedule = ({
     mutationFn: async (data: any) => {
       toast.success("Repayment schedule details has been updated successfully");
 
-      const res = await axios.post(
-        `/api/order/hirepurchase/payment`,
-        {
-          paymentScheduleId: repaymentschedule.id,
-          orderId: repaymentschedule.orderId,
-          ...data,
-        },
-        { withCredentials: true },
-      );
+      const res = await axios.post(`/api/order/hirepurchase/payment`, {
+        paymentScheduleId: repaymentschedule.id,
+        orderId: repaymentschedule.orderId,
+        ...data,
+      });
 
       return res.data;
     },

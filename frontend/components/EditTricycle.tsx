@@ -46,14 +46,10 @@ const EditTricycle = ({ tricycle }: { tricycle: any }) => {
     mutationFn: async (data: any) => {
       toast.success("Tricycle details has been updated successfully");
 
-      const res = await axios.patch(
-        `/api/tricycle`,
-        {
-          id: tricycle.id,
-          ...data,
-        },
-        { withCredentials: true },
-      );
+      const res = await axios.patch(`/api/tricycle`, {
+        id: tricycle.id,
+        ...data,
+      });
 
       return res.data;
     },

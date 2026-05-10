@@ -64,15 +64,11 @@ const EditPayoutSchedule = ({ payoutschedule }: { payoutschedule: any }) => {
     mutationFn: async (data: any) => {
       toast.success("Payout schedule details has been updated successfully");
 
-      const res = await axios.post(
-        `/api/investment/payout`,
-        {
-          payoutScheduleId: payoutschedule.id,
-          investmentId: payoutschedule.investmentId,
-          ...data,
-        },
-        { withCredentials: true },
-      );
+      const res = await axios.post(`/api/investment/payout`, {
+        payoutScheduleId: payoutschedule.id,
+        investmentId: payoutschedule.investmentId,
+        ...data,
+      });
 
       return res.data;
     },

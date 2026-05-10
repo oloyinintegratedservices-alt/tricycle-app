@@ -42,14 +42,10 @@ const EditUser = ({ user }: { user: any }) => {
     mutationFn: async (data: any) => {
       toast.success("user details has been updated successfully");
 
-      const res = await axios.patch(
-        `/api/user`,
-        {
-          id: user.id,
-          ...data,
-        },
-        { withCredentials: true },
-      );
+      const res = await axios.patch(`/api/user`, {
+        id: user.id,
+        ...data,
+      });
 
       return res.data;
     },

@@ -47,16 +47,10 @@ export default function Home() {
 
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof resetPasswordFormSchema>) => {
-      const res = await axios.post(
-        `/api/auth/reset-password`,
-        {
-          password: data.password,
-          token,
-        },
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await axios.post(`/api/auth/reset-password`, {
+        password: data.password,
+        token,
+      });
 
       return res.data;
     },

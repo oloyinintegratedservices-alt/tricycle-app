@@ -60,14 +60,10 @@ const EditOrder = ({
     mutationFn: async (data: any) => {
       toast.success("Order details has been updated successfully");
 
-      const res = await axios.patch(
-        `/api/order`,
-        {
-          id: order.id,
-          ...data,
-        },
-        { withCredentials: true },
-      );
+      const res = await axios.patch(`/api/order`, {
+        id: order.id,
+        ...data,
+      });
 
       return res.data;
     },

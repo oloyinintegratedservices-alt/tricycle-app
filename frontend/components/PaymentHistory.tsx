@@ -70,9 +70,6 @@ const PaymentHistory = ({ repaymentschedule }: { repaymentschedule: any }) => {
     queryFn: async () => {
       const res = await axios.get(
         `/api/order/schedule/${repaymentschedule.id}/payments`,
-        {
-          withCredentials: true,
-        },
       );
 
       return res.data;
