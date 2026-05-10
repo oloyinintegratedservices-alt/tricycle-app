@@ -5,7 +5,7 @@ import { DataTable } from "@/components/DataTable";
 import { Edit, Eye, MoreHorizontal, Trash } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 import Tricycle from "@/components/Tricycle";
 import DeleteTricycle from "@/components/DeleteTricycle";

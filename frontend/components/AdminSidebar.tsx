@@ -17,7 +17,7 @@ import {
   UserRoundPlusIcon,
 } from "lucide-react";
 import { Button } from "./ui/button";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { usePathname, useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";

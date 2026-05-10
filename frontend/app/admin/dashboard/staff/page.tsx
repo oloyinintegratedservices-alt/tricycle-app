@@ -5,7 +5,7 @@ import { DataTable } from "@/components/DataTable";
 import { Trash } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 import Staff from "@/components/Staff";
 import EditStaff from "@/components/EditStaff";

@@ -16,7 +16,7 @@ import { Trash } from "lucide-react";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import axios from "axios";
+import axios from "@/lib/axios";
 
 const DeleteUser = ({ user }: { user: any }) => {
   const [open, setOpen] = useState(false);

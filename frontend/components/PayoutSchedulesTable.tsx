@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/DataTable";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 import EditPayoutSchedule from "./EditPayoutSchedule";
 import PayoutHistory from "./PayoutHistory";

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CustomersChart } from "@/components/CustomersChart";
 import { OrdersChart } from "@/components/OrdersChart";
 import RecentOrders from "@/components/RecentOrders";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { Order } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChartAreaIcon, DollarSign, ListOrdered, Caravan } from "lucide-react";

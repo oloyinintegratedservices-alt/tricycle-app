@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button";
 import { EyeIcon, EyeOffIcon, MailIcon } from "lucide-react";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";

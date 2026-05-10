@@ -11,7 +11,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { DataTable } from "@/components/DataTable";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 import Order from "@/components/Order";
 import EditOrder from "@/components/EditOrder";
