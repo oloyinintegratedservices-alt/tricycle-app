@@ -69,8 +69,8 @@ export default function Home() {
   }
 
   return (
-    <div className="relative flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans text-black">
-      <div className="z-20 bg-white w-2/3 md:min-w-2xl rounded-s-md p-4">
+    <div className="relative flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans text-black p-4">
+      <div className="z-20 bg-white w-full md:w-2xl rounded-s-md p-4">
         <div>
           <h2>Sign In</h2>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
