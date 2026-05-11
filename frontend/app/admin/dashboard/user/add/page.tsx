@@ -36,7 +36,7 @@ const Page = () => {
     },
     onSuccess: () => {
       // toast message
-      toast.success("New Customer onboarded successfully");
+      toast.success("New User added successfully");
       form.reset();
     },
     onError: (err: any) => {
@@ -50,7 +50,7 @@ const Page = () => {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold">Add Customer</h2>
+      <h2 className="text-3xl font-bold">Add User</h2>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="space-y-4 mt-4">
           <Controller

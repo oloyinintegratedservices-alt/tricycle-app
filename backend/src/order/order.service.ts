@@ -61,8 +61,6 @@ export class OrderService {
   }
 
   async createHirePurchaseOrder(createOrderDto: CreateOrderDto) {
-    // console.log(createOrderDto);
-
     const existingOrder = await this.prisma.order.findFirst({
       where: {
         tricycleId: createOrderDto.tricycleId,
@@ -238,10 +236,15 @@ export class OrderService {
             fullname: true,
           },
         },
+        payments: {
+          select: {
+            amount: true,
+          },
+        },
       },
     });
 
-    return orders.map(({ tricycle, user, ...order }) => ({
+    return orders.map(({ tricycle, user, payments, ...order }) => ({
       ...order,
       paymentDay: new Intl.DateTimeFormat('en-US', {
         weekday: 'long',
@@ -251,6 +254,10 @@ export class OrderService {
       chasisNumber: tricycle.chasisNumber,
       engineNumber: tricycle.engineNumber,
       fullname: user.fullname,
+      balance:
+        order.totalPrice -
+        payments.reduce((previous, current) => previous + current.amount, 0) -
+        (order.downPayment ?? 0),
     }));
   }
 

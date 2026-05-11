@@ -2,17 +2,11 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/DataTable";
-import { Edit, Eye, MoreHorizontal, Trash } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 import axios from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 import User from "@/components/User";
 import EditUser from "@/components/EditUser";
 import DeleteUser from "@/components/DeleteUser";
-// import Tricycle from "@/components/Tricycle";
-// import DeleteTricycle from "@/components/DeleteTricycle";
-// import EditTricycle from "@/components/EditTricycle";
 
 export type User = {
   id: string;
@@ -63,7 +57,7 @@ export const columns: ColumnDef<User>[] = [
 
 const Page = () => {
   const { data } = useQuery({
-    queryKey: ["staffs"],
+    queryKey: ["users"],
     queryFn: async () => {
       const res = await axios.get(`/api/user`);
 
@@ -73,7 +67,7 @@ const Page = () => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-3xl font-bold">Customers</h2>
+      <h2 className="text-3xl font-bold">Users</h2>
       <DataTable columns={columns} data={data?.data ?? []} />
     </div>
   );

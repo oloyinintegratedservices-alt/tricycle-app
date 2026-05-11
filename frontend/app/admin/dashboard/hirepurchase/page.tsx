@@ -101,6 +101,19 @@ export const columns: ColumnDef<Order>[] = [
     },
   },
   {
+    accessorKey: "balance",
+    header: () => <div className="text-left">Remaining Balance (₦)</div>,
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("balance"));
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "NGN",
+      }).format(amount);
+
+      return <div className="text-left font-medium">{formatted}</div>;
+    },
+  },
+  {
     accessorKey: "paymentDay",
     header: "Payment Day",
   },
