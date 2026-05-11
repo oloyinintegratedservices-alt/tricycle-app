@@ -18,8 +18,6 @@ const AdminDashboard = () => {
     },
   });
 
-  console.log(data);
-
   const { data: user, isLoading: isLoadingUser } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
@@ -44,7 +42,7 @@ const AdminDashboard = () => {
       <h2 className="text-3xl font-bold">
         Welcome {user?.fullname?.split(" ")[0]}
       </h2>
-      <div className="md:grid grid-cols-4 gap-8 mt-4">
+      <div className="md:grid space-y-4 grid-cols-4 gap-8 mt-4">
         <div className="p-4 bg-primary rounded-md text-white flex gap-x-4 ">
           <div className="flex justify-center items-center w-9 h-9 bg-white rounded-md text-primary p-2">
             <ListOrdered className="w-4 h-4" />
