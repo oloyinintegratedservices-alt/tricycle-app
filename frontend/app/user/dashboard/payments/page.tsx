@@ -4,9 +4,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/DataTable";
 import axios from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
-import Order from "@/components/Order";
-import EditOrder from "@/components/EditOrder";
-import DeleteOrder from "@/components/DeleteOrder";
 
 export type PayoutSchedule = {
   id: string;
@@ -14,10 +11,10 @@ export type PayoutSchedule = {
 };
 
 export const columns: ColumnDef<PayoutSchedule>[] = [
-  {
-    accessorKey: "payoutSchedule.installmentNumber",
-    header: "Month",
-  },
+  // {
+  //   accessorKey: "payoutSchedule.installmentNumber",
+  //   header: "Month",
+  // },
   {
     accessorKey: "payoutDate",
     header: "Payout Date",

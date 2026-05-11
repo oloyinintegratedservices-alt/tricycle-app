@@ -38,10 +38,7 @@ export const columns: ColumnDef<Investment>[] = [
     accessorKey: "tricycle.engineNumber",
     header: "Engine Number",
   },
-  {
-    accessorKey: "user.fullname",
-    header: "Customer",
-  },
+
   {
     accessorKey: "investedAmount",
     header: () => <div className="text-left">Total Invested Amount</div>,
