@@ -83,7 +83,7 @@ model Tricycle {
 
 model Order {
   id                 String              @id @default(uuid())
-  orderType          OrderType           @unique
+  orderType          OrderType           
   userId             String
   tricycleId         String              @unique
   totalPrice         Float

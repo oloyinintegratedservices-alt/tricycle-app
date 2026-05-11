@@ -543,7 +543,7 @@ const Page = () => {
                   <ComboboxInput placeholder="Search users..." />
                   <ComboboxContent>
                     <ComboboxEmpty>No users found.</ComboboxEmpty>
-                    <ComboboxList>
+                    <ComboboxList className="h-20">
                       {(user) => (
                         <ComboboxItem key={user.label} value={user}>
                           <Item size="xs" className="p-0">

@@ -48,7 +48,7 @@ const AdminDashboard = () => {
             <ListOrdered className="w-4 h-4" />
           </div>
           <div className="m-0">
-            <h3 className="m-0">Total Customers</h3>
+            <h3 className="m-0">Total Users</h3>
             <span className="text-lg font-semibold">
               {data?.totalCustomers ?? 0}
             </span>
