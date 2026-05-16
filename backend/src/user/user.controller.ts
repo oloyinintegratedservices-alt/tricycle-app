@@ -63,7 +63,7 @@ export class UserController {
   @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
-    return this.userService.softdelete(id);
+    return this.userService.delete(id);
   }
 
   @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
