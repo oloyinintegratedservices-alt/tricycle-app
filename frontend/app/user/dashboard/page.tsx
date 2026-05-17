@@ -41,7 +41,7 @@ const UserDashboard = () => {
       <h2 className="text-3xl font-bold">
         Welcome {user?.fullname?.split(" ")[0]}
       </h2>
-      <div className="md:grid space-y-4 grid-cols-4 gap-8 my-4">
+      <div className="md:grid space-y-4 grid-cols-3 gap-6 my-4">
         <div className="p-4 bg-green-800 rounded-md text-white flex gap-x-4 ">
           <div className="flex justify-center items-center w-9 h-9 bg-white rounded-md text-blue-950 p-2">
             <DollarSign className="w-4 h-4" />
@@ -84,7 +84,7 @@ const UserDashboard = () => {
             </span>
           </div>
         </div>
-        <div className="p-4 bg-blue-500 rounded-md text-white flex gap-x-4 ">
+        <div className="p-4 bg-blue-900 rounded-md text-white flex gap-x-4 ">
           <div className="flex justify-center items-center w-9 h-9 bg-white rounded-md text-green-800 p-2">
             <ChartAreaIcon className="w-4 h-4" />
           </div>
@@ -95,7 +95,6 @@ const UserDashboard = () => {
                 style: "currency",
                 currency: "NGN",
               }).format(data?.totalBalance)}
-              {/* {data?.totalBalance ?? 0} */}
             </span>
           </div>
         </div>

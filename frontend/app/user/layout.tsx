@@ -8,7 +8,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="grid grid-cols-[auto_1fr] bg-white">
+    <div className="md:grid grid-cols-[auto_1fr] bg-white">
       {/* Desktop Sidebar */}
       <div className="hidden md:block h-screen">
         <UserSidebar />

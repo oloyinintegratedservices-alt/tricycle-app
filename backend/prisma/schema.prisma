@@ -1,6 +1,6 @@
 generator client {
-  provider     = "prisma-client"
-  output       = "../generated/prisma"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -76,14 +76,14 @@ model Tricycle {
   color         String
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  deleted       Boolean     @default(false)
   investment    Investment?
-  deleted                Boolean      @default(false)
   order         Order?
 }
 
 model Order {
   id                 String              @id @default(uuid())
-  orderType          OrderType           
+  orderType          OrderType
   userId             String
   tricycleId         String              @unique
   totalPrice         Float
@@ -94,28 +94,27 @@ model Order {
   status             OrderStatus         @default(PENDING)
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
+  deleted            Boolean             @default(false)
+  address            String?
+  branchChairman     String?
+  fullname           String?
+  guarantorName      String?
   tricycle           Tricycle            @relation(fields: [tricycleId], references: [id])
   user               User                @relation(fields: [userId], references: [id])
   payments           Payment[]
   repaymentSchedules RepaymentSchedule[]
-  deleted                Boolean      @default(false)
-  fullname           String?
-  branchChairman     String?
-  address            String?
-  guarantorName          String? 
-
 }
 
 model RepaymentSchedule {
   id                String          @id @default(uuid())
   orderId           String
   installmentNumber Int
-  startDate           DateTime
   dueDate           DateTime
   amountDue         Float
   amountPaid        Float           @default(0)
   status            RepaymentStatus @default(PENDING)
   createdAt         DateTime        @default(now())
+  startDate         DateTime
   payments          Payment[]
   order             Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
@@ -132,8 +131,8 @@ model Payment {
   reference   String?
   recordedBy  String?
   createdAt   DateTime           @default(now())
-  order       Order              @relation(fields: [orderId], references: [id],onDelete: Cascade)
-  schedule    RepaymentSchedule? @relation(fields: [scheduleId], references: [id],onDelete: Cascade)
+  order       Order              @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  schedule    RepaymentSchedule? @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
 }
 
 model Investment {
@@ -150,26 +149,25 @@ model Investment {
   status         InvestmentStatus @default(ACTIVE)
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
+  deleted        Boolean          @default(false)
   tricycle       Tricycle         @relation(fields: [tricycleId], references: [id])
   user           User             @relation(fields: [userId], references: [id])
   payouts        Payout[]
   schedules      PayoutSchedule[]
-  deleted                Boolean      @default(false)
-
 }
 
 model PayoutSchedule {
   id                String          @id @default(uuid())
   investmentId      String
   installmentNumber Int
-  startDate      DateTime?
   dueDate           DateTime
   amountDue         Float
   amountPaid        Float           @default(0)
   status            RepaymentStatus @default(PENDING)
   createdAt         DateTime        @default(now())
+  startDate         DateTime?
   payouts           Payout[]
-  investment        Investment      @relation(fields: [investmentId], references: [id],onDelete: Cascade)
+  investment        Investment      @relation(fields: [investmentId], references: [id], onDelete: Cascade)
 
   @@unique([investmentId, installmentNumber])
 }
@@ -185,8 +183,8 @@ model Payout {
   status           PayoutStatus   @default(PENDING)
   recordedBy       String?
   createdAt        DateTime       @default(now())
-  investment       Investment     @relation(fields: [investmentId], references: [id],onDelete: Cascade)
-  payoutSchedule   PayoutSchedule @relation(fields: [payoutScheduleId], references: [id],onDelete: Cascade)
+  investment       Investment     @relation(fields: [investmentId], references: [id], onDelete: Cascade)
+  payoutSchedule   PayoutSchedule @relation(fields: [payoutScheduleId], references: [id], onDelete: Cascade)
 }
 
 enum RoleName {

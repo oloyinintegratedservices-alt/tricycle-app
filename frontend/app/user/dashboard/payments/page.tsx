@@ -68,7 +68,7 @@ const Page = () => {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       <h2 className="text-3xl font-bold">Payouts History</h2>
       <DataTable columns={columns} data={data ?? []} />
     </div>
