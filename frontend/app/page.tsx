@@ -69,7 +69,10 @@ export default function Home() {
   }
 
   return (
-    <div className="relative flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans text-black p-4">
+    <div className="relative flex flex-col flex-1 items-center justify-center gap-32 bg-zinc-50 font-sans text-black p-4">
+      <div className="relative h-32 w-32">
+        <Image src="/logo.jpg" alt="Logo" fill />
+      </div>
       <div className="z-20 bg-white w-full md:w-2xl rounded-s-md p-4">
         <div>
           <h2>Sign In</h2>
@@ -140,6 +143,15 @@ export default function Home() {
             </div>
           </form>
         </div>
+      </div>
+      <div className="relative z-20 text-black">
+        Designed by{" "}
+        <a
+          className="underline"
+          href="https://www.linkedin.com/in/lasisi-balogun-opeoluwa"
+        >
+          NexIngene
+        </a>
       </div>
       <div className="absolute z-10 h-2/3 w-full left-0 bottom-0">
         <Image src="/auth-bg.png" alt="Background" fill priority />
