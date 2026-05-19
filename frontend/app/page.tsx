@@ -71,13 +71,7 @@ export default function Home() {
   return (
     <div className="relative flex flex-col flex-1 items-center justify-center gap-32 bg-zinc-50 font-sans text-black p-4">
       <div className="relative h-32 w-32">
-        <Image
-          src="/logo.jpg"
-          alt="Logo"
-          height={128}
-          width={128}
-          unoptimized
-        />
+        <Image src="/logo.JPG" alt="Logo" height={128} width={128} />
       </div>
       <div className="z-20 bg-white w-full md:w-2xl rounded-s-md p-4">
         <div>
