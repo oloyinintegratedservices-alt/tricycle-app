@@ -49,7 +49,7 @@ const newInvestmentFormSchema = z
     tricycleId: z.string().nonempty(),
     userId: z.string().nonempty(),
 
-    scheduleType: z.enum(["WEEKLY", "MONTHLY"]).default("MONTHLY"),
+    scheduleType: z.enum(["WEEKLY", "MONTHLY"]).default("WEEKLY"),
 
     weeks: z.coerce.number<string>().int().positive().optional(),
     months: z.coerce.number<string>().int().positive().optional(),
@@ -105,7 +105,7 @@ const Page = () => {
     defaultValues: {
       tricycleId: "",
       userId: "",
-      scheduleType: "MONTHLY",
+      scheduleType: "WEEKLY",
     },
   });
 

@@ -46,17 +46,27 @@ export class InvestmentController {
   }
 
   @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
-  @Post('payout')
+  @Post('payout/schedule')
   saveInvestmentPayoutForAPayoutSchedule(@Body() payoutDto: CreatePayoutDto) {
     return this.investmentService.saveInvestmentPayoutForAPayoutSchedule(
       payoutDto,
     );
   }
 
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
+  @Post('payout')
+  saveInvestmentPayout(@Body() payoutDto: CreatePayoutDto) {
+    return this.investmentService.saveInvestmentPayout(payoutDto);
+  }
+
   @Get('schedule/:id/payouts')
   getInvestmentPayoutsForAPayoutSchedule(@Param('id') id: string) {
-    // console.log(id);
     return this.investmentService.getInvestmentPayoutsForAPayoutSchedule(id);
+  }
+
+  @Get(':id/payouts')
+  getInvestmentPayouts(@Param('id') id: string) {
+    return this.investmentService.getInvestmentPayouts(id);
   }
 
   @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)

@@ -350,4 +350,26 @@ export class OrderService {
       },
     });
   }
+
+  async saveHirePurchaseOrderPayment(paymentDto: CreatePaymentDto) {
+    return this.prisma.payment.create({
+      data: {
+        orderId: paymentDto.orderId,
+        amount: paymentDto.amount,
+        paymentDate: paymentDto.paymentDate,
+        method: paymentDto.method,
+      },
+    });
+  }
+
+  getHirePurchaseOrderPayments(orderId: string) {
+    return this.prisma.payment.findMany({
+      where: {
+        orderId,
+      },
+      orderBy: {
+        paymentDate: 'desc',
+      },
+    });
+  }
 }

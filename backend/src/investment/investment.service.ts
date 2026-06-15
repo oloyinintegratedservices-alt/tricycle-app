@@ -225,6 +225,17 @@ export class InvestmentService {
     });
   }
 
+  async saveInvestmentPayout(payoutDto: CreatePayoutDto) {
+    return this.prisma.payout.create({
+      data: {
+        investmentId: payoutDto.investmentId,
+        amount: payoutDto.amount,
+        payoutDate: payoutDto.payoutDate,
+        method: payoutDto.method,
+      },
+    });
+  }
+
   getInvestmentPayoutsForAPayoutSchedule(payoutScheduleId: string) {
     return this.prisma.payout.findMany({
       where: {
@@ -236,6 +247,17 @@ export class InvestmentService {
             installmentNumber: true,
           },
         },
+      },
+      orderBy: {
+        payoutDate: 'desc',
+      },
+    });
+  }
+
+  getInvestmentPayouts(investmentId: string) {
+    return this.prisma.payout.findMany({
+      where: {
+        investmentId,
       },
       orderBy: {
         payoutDate: 'desc',

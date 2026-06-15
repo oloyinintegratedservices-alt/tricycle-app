@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
+import MakeRepayment from "@/components/MakePayment";
 
 export type Order = {
   id: string;
@@ -133,6 +134,7 @@ export const columns: ColumnDef<Order>[] = [
             order={row.original}
             nameOfQueries="hirepurchaseorders"
           />
+          <MakeRepayment order={row.original} />
         </div>
       );
     },

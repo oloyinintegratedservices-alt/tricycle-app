@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import Investment from "@/components/Investment";
 import EditInvestment from "@/components/EditInvestment";
 import DeleteInvestment from "@/components/DeleteInvestment";
+import MakePayout from "@/components/MakePayout";
 
 export type Investment = {
   id: string;
@@ -79,6 +80,7 @@ export const columns: ColumnDef<Investment>[] = [
           <Investment investment={row.original} />
           <EditInvestment investment={row.original} />
           <DeleteInvestment investment={row.original} />
+          <MakePayout investment={row.original} />
         </div>
       );
     },

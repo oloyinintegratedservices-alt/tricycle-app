@@ -5,29 +5,19 @@ import { DataTable } from "@/components/DataTable";
 import axios from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 
-export type PayoutSchedule = {
+export type Payout = {
   id: string;
-  installmentNumber: string;
 };
 
-export const columns: ColumnDef<PayoutSchedule>[] = [
-  // {
-  //   accessorKey: "payoutSchedule.installmentNumber",
-  //   header: "Month",
-  // },
-  {
-    id: "serialNumber",
-    header: "#",
-    cell: (info) => info.row.index + 1, // Dynamically calculates row number (starts at 1)
-  },
+export const columns: ColumnDef<Payout>[] = [
   {
     accessorKey: "payoutDate",
-    header: "Payout Date",
+    header: "Payment Date",
     cell: ({ row }) => {
       const date = row.getValue("payoutDate") as string;
       const formatter = new Intl.DateTimeFormat("en-US", {
         dateStyle: "long",
-        timeStyle: "short",
+        timeStyle: "medium",
       });
       const formatted = formatter.format(new Date(date));
 
@@ -37,7 +27,7 @@ export const columns: ColumnDef<PayoutSchedule>[] = [
 
   {
     accessorKey: "amount",
-    header: "Amount",
+    header: "Amount Paid",
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"));
       const formatted = new Intl.NumberFormat("en-NG", {
@@ -48,36 +38,28 @@ export const columns: ColumnDef<PayoutSchedule>[] = [
       return <div className="text-left font-medium">{formatted}</div>;
     },
   },
-  //   {
-  //     accessorKey: "status",
-  //     header: "Status",
-  //   },
-
-  //   {
-  //     id: "actions",
-  //     header: "Actions",
-  //     cell: ({ row }) => {
-  //       return <div className="flex gap-2"></div>;
-  //     },
-  //   },
+  {
+    accessorKey: "method",
+    header: "Method",
+  },
 ];
 
-const Page = () => {
+const InvestmentPayoutHistory = ({ investment }: { investment: any }) => {
   const { data } = useQuery({
-    queryKey: ["payouts"],
+    queryKey: ["investmentpayouts", [investment.id]],
     queryFn: async () => {
-      const res = await axios.get(`/api/user/payouts`);
+      const res = await axios.get(`/api/investment/${investment.id}/payouts`);
 
       return res.data;
     },
   });
 
   return (
-    <div className="space-y-4 w-full">
-      <h2 className="text-3xl font-bold">Payouts History</h2>
+    <>
+      <h2 className="text-2xl font-bold">Payout History</h2>
       <DataTable columns={columns} data={data ?? []} />
-    </div>
+    </>
   );
 };
 
-export default Page;
+export default InvestmentPayoutHistory;

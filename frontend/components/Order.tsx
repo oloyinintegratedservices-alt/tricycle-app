@@ -14,6 +14,7 @@ import { Button } from "./ui/button";
 import { Eye } from "lucide-react";
 
 import RepaymentSchedule from "./RepaymentSchedulesTable";
+import HirePurchasePaymentHistory from "./HirePurchasePaymentHistory";
 
 const Order = ({ order }: { order: any }) => {
   const [open, setOpen] = useState(false);
@@ -44,8 +45,12 @@ const Order = ({ order }: { order: any }) => {
         {order.orderType == "HIRE_PURCHASE" && (
           <div>Address: {order.address}</div>
         )}
-        {order.orderType == "HIRE_PURCHASE" && (
+        {/* {order.orderType == "HIRE_PURCHASE" && (
           <RepaymentSchedule order={order} />
+        )} */}
+
+        {order.orderType == "HIRE_PURCHASE" && (
+          <HirePurchasePaymentHistory order={order} />
         )}
 
         <DialogFooter className="sm:justify-end">

@@ -14,6 +14,7 @@ import { Button } from "./ui/button";
 import { Eye } from "lucide-react";
 
 import PayoutSchedule from "./PayoutSchedulesTable";
+import InvestmentPayoutHistory from "./InvestmentPayoutHistory";
 
 const Investment = ({ investment }: { investment: any }) => {
   const [open, setOpen] = useState(false);
@@ -43,12 +44,12 @@ const Investment = ({ investment }: { investment: any }) => {
             style: "currency",
             currency: "NGN",
           }).format(investment.expectedReturn)}
-          {/* {investment.expectedReturn} */}
         </div>
         <div>Color: {investment.color}</div>
         <div>Customer: {investment.fullname}</div>
         <div>Investment Status: {investment.status}</div>
-        <PayoutSchedule investment={investment} />
+        {/* <PayoutSchedule investment={investment} /> */}
+        <InvestmentPayoutHistory investment={investment} />
 
         <DialogFooter className="sm:justify-end">
           <Button

@@ -22,8 +22,9 @@ export class CreatePayoutDto {
   @IsEnum(PayoutStatus)
   status?: PayoutStatus;
 
+  @IsOptional()
   @IsString()
-  payoutScheduleId!: string;
+  payoutScheduleId?: string;
 
   @IsEnum(PaymentMethod)
   method!: PaymentMethod;

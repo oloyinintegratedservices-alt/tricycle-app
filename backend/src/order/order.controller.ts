@@ -35,11 +35,19 @@ export class OrderController {
   }
 
   @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
-  @Post('hirepurchase/payment')
-  createHirePurchaseOrderPayment(@Body() paymentDto: CreatePaymentDto) {
+  @Post('hirepurchase/payment/schedule')
+  createHirePurchaseOrderPaymentForAPaymentSchedule(
+    @Body() paymentDto: CreatePaymentDto,
+  ) {
     return this.orderService.saveHirePurchaseOrderPaymentForAPaymentSchedule(
       paymentDto,
     );
+  }
+
+  @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
+  @Post('hirepurchase/payment')
+  createHirePurchaseOrderPayment(@Body() paymentDto: CreatePaymentDto) {
+    return this.orderService.saveHirePurchaseOrderPayment(paymentDto);
   }
 
   @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)
@@ -53,6 +61,11 @@ export class OrderController {
     return this.orderService.getHirePurchaseOrderPaymentsForAPaymentSchedule(
       id,
     );
+  }
+
+  @Get(':id/payments')
+  getHirePurchaseOrderPayments(@Param('id') id: string) {
+    return this.orderService.getHirePurchaseOrderPayments(id);
   }
 
   @Roles(RoleName.super_admin, RoleName.admin, RoleName.staff)

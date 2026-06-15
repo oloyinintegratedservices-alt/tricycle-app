@@ -175,7 +175,7 @@ model PayoutSchedule {
 model Payout {
   id               String         @id @default(uuid())
   investmentId     String
-  payoutScheduleId String
+  payoutScheduleId String?
   amount           Float
   payoutDate       DateTime
   method           PaymentMethod
@@ -184,7 +184,7 @@ model Payout {
   recordedBy       String?
   createdAt        DateTime       @default(now())
   investment       Investment     @relation(fields: [investmentId], references: [id], onDelete: Cascade)
-  payoutSchedule   PayoutSchedule @relation(fields: [payoutScheduleId], references: [id], onDelete: Cascade)
+  payoutSchedule   PayoutSchedule? @relation(fields: [payoutScheduleId], references: [id], onDelete: Cascade)
 }
 
 enum RoleName {
