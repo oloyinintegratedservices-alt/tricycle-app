@@ -61,61 +61,14 @@ export class InvestmentService {
     )
       throw new BadRequestException('No months');
 
-    return await this.prisma.$transaction(async (tx) => {
-      const investment = await tx.investment.create({
-        data: {
-          investedAmount: createInvestmentDto.investedAmount,
-          expectedReturn: createInvestmentDto.expectedReturn,
-          tricycleId: createInvestmentDto.tricycleId,
-          userId: createInvestmentDto.userId,
-          startDate: new Date(createInvestmentDto.startDate!),
-        },
-      });
-
-      const installments =
-        createInvestmentDto.scheduleType == 'WEEKLY'
-          ? Math.max(createInvestmentDto.weeks as number, 1)
-          : Math.max(createInvestmentDto.months as number, 1);
-
-      const amountToPay = Math.floor(
-        createInvestmentDto.expectedReturn / installments,
-      );
-
-      const isWeekly = createInvestmentDto.scheduleType === 'WEEKLY';
-
-      let balance = expectedReturn;
-
-      let currentStart = new Date(createInvestmentDto.startDate!);
-
-      let schedules: any = [];
-
-      for (let i = 1; i <= installments; i++) {
-        const currentEnd = new Date(currentStart);
-
-        if (isWeekly) currentEnd.setDate(currentEnd.getDate() + 7);
-        else currentEnd.setMonth(currentEnd.getMonth() + 1);
-
-        let amountDue = i === installments ? balance : amountToPay;
-
-        balance -= amountDue;
-
-        schedules.push({
-          installmentNumber: i,
-          startDate: new Date(currentStart),
-          dueDate: new Date(currentEnd),
-          amountDue,
-          investmentId: investment.id,
-        });
-
-        // Move to next week or month
-        currentStart = currentEnd;
-      }
-
-      await tx.payoutSchedule.createMany({
-        data: schedules,
-      });
-
-      return investment;
+    return await this.prisma.investment.create({
+      data: {
+        investedAmount: createInvestmentDto.investedAmount,
+        expectedReturn: createInvestmentDto.expectedReturn,
+        tricycleId: createInvestmentDto.tricycleId,
+        userId: createInvestmentDto.userId,
+        startDate: new Date(createInvestmentDto.startDate!),
+      },
     });
   }
 

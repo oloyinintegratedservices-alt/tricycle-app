@@ -109,63 +109,18 @@ export class OrderService {
         throw new BadRequestException('No months');
     }
 
-    return await this.prisma.$transaction(async (tx) => {
-      const order = await tx.order.create({
-        data: {
-          totalPrice,
-          orderType: OrderType.HIRE_PURCHASE,
-          tricycleId: createOrderDto.tricycleId,
-          userId: createOrderDto.userId,
-          downPayment: createOrderDto.downPayment,
-          startDate: new Date(createOrderDto.startDate!),
-          guarantorName: createOrderDto.guarantorName,
-          branchChairman: createOrderDto.branchChairman,
-          address: createOrderDto.address,
-        },
-      });
-
-      const installments =
-        createOrderDto.scheduleType == 'WEEKLY'
-          ? Math.max(createOrderDto.weeks as number, 1)
-          : Math.max(createOrderDto.months as number, 1);
-
-      const amountToPay = Math.floor(totalPrice / installments);
-
-      const isWeekly = createOrderDto.scheduleType === 'WEEKLY';
-
-      let balance = totalPrice;
-
-      let currentStart = new Date(createOrderDto.startDate!);
-
-      let schedules: any = [];
-
-      for (let i = 1; i <= installments; i++) {
-        const currentEnd = new Date(currentStart);
-
-        if (isWeekly) currentEnd.setDate(currentEnd.getDate() + 7);
-        else currentEnd.setMonth(currentEnd.getMonth() + 1);
-
-        let amountDue = i === installments ? balance : amountToPay;
-
-        balance -= amountDue;
-
-        schedules.push({
-          installmentNumber: i,
-          startDate: new Date(currentStart),
-          dueDate: new Date(currentEnd),
-          amountDue,
-          orderId: order.id,
-        });
-
-        // Move to next week or month
-        currentStart = currentEnd;
-      }
-
-      await tx.repaymentSchedule.createMany({
-        data: schedules,
-      });
-
-      return order;
+    return await this.prisma.order.create({
+      data: {
+        totalPrice,
+        orderType: OrderType.HIRE_PURCHASE,
+        tricycleId: createOrderDto.tricycleId,
+        userId: createOrderDto.userId,
+        downPayment: createOrderDto.downPayment,
+        startDate: new Date(createOrderDto.startDate!),
+        guarantorName: createOrderDto.guarantorName,
+        branchChairman: createOrderDto.branchChairman,
+        address: createOrderDto.address,
+      },
     });
   }
 
